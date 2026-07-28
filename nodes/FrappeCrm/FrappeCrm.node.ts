@@ -166,16 +166,15 @@ export class FrappeCrm implements INodeType {
 		displayName: 'Frappe CRM',
 		name: 'frappeCrm',
 		// Logo Frappe CRM : badge à fond magenta #ef0bf5 opaque, glyphe blanc en négatif.
-		// Fichier unique et donc magenta identique sur les deux thèmes, par choix : le
-		// badge porte son propre fond, il tient le contraste sur clair comme sur sombre.
-		// Cela laisse le warning `icon-prefer-themed-variants` (non bloquant, lint sort
-		// en 0) ; la forme { light, dark } exigerait deux fichiers distincts, donc une
-		// teinte différente sur l'un des deux thèmes.
+		// Fichier unique, donc magenta identique sur les deux thèmes, par choix : le badge
+		// porte son propre fond et tient le contraste sur clair comme sur sombre. Cela
+		// laisse le warning `icon-prefer-themed-variants` (non bloquant, lint sort en 0) ;
+		// la forme { light, dark } impose deux fichiers de chemins distincts, donc une
+		// teinte différente d'un côté.
 		//
-		// Ne pas basculer sur icons/frappe-crm-light.svg et -dark.svg : ces variantes
-		// aplatissent le logo en silhouette monochrome (magenta perdu) et leur nom désigne
-		// la couleur de l'encre, pas le thème cible — les câbler tel quel donne un aplat
-		// blanc sur fond clair et noir sur fond sombre, invisible dans les deux cas.
+		// Si des variantes monochromes sont réintroduites un jour : dans n8n, la clé
+		// désigne le thème de l'interface, pas la couleur de l'encre. Une icône blanche
+		// va sous `dark`, une icône noire sous `light` — l'inverse les rend invisibles.
 		icon: 'file:../../icons/frappe-crm.svg',
 		group: ['transform'],
 		version: 1,
