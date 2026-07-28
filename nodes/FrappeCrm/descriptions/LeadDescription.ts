@@ -11,7 +11,7 @@ const NO_OF_EMPLOYEES_OPTIONS = [
 	{ name: '1000+', value: '1000+' },
 ];
 
-/** Champs de `CRM Lead` proposés en création comme en mise à jour. */
+/** `CRM Lead` fields offered on create as well as update. */
 const leadFields: INodeProperties[] = [
 	{
 		displayName: 'Annual Revenue',

@@ -3,14 +3,14 @@ import type { INodeProperties } from 'n8n-workflow';
 import { documentIdField, getManyFields, omitFields, operationsFor } from './CommonDescription';
 
 /**
- * Champs du doctype `Contact` (core Frappe), utilisé par Frappe CRM.
+ * Fields of the `Contact` doctype (Frappe core), the one Frappe CRM uses.
  *
- * « Email », « Mobile Number » et « Phone » ne sont pas des champs simples côté
- * Frappe : `Contact.email_id`, `Contact.mobile_no` et `Contact.phone` sont
- * recalculés à partir des tables enfants `email_ids` et `phone_nos` (cf.
- * `set_primary_email()` dans frappe/contacts/doctype/contact/contact.py, qui remet
- * `email_id` à vide si `email_ids` est vide). Le nœud les convertit donc en lignes
- * de table enfant avant l'envoi — voir `buildContactBody()` dans FrappeCrm.node.ts.
+ * « Email », « Mobile Number » and « Phone » are not plain fields on the Frappe side:
+ * `Contact.email_id`, `Contact.mobile_no` and `Contact.phone` are recomputed from the
+ * `email_ids` and `phone_nos` child tables (see `set_primary_email()` in
+ * frappe/contacts/doctype/contact/contact.py, which blanks `email_id` out when
+ * `email_ids` is empty). The node therefore turns them into child table rows before
+ * sending — see `buildContactBody()` in FrappeCrm.node.ts.
  */
 const contactFields: INodeProperties[] = [
 	{

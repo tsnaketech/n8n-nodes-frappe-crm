@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 import { documentIdField, getManyFields, omitFields, operationsFor } from './CommonDescription';
 
-/** Champs de `CRM Task`. Seul `title` est obligatoire. */
+/** `CRM Task` fields. Only `title` is required. */
 const taskFields: INodeProperties[] = [
 	{
 		displayName: 'Assigned To',

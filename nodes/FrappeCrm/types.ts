@@ -1,11 +1,11 @@
 /**
- * Correspondance resource n8n -> doctype Frappe.
+ * Mapping from n8n resource to Frappe doctype.
  *
- * Noms vérifiés dans github.com/frappe/crm, dossier `crm/fcrm/doctype/`.
- * Attention : il n'existe pas de doctype « CRM Contact ». Le dossier `crm_contacts`
- * correspond à `CRM Contacts`, une table enfant (`"istable": 1`) utilisée dans le
- * champ `contacts` de `CRM Deal`. Frappe CRM s'appuie sur le doctype `Contact` du
- * core Frappe (cf. `CRM Deal.contact`, un Link vers `Contact`).
+ * Names verified against github.com/frappe/crm, folder `crm/fcrm/doctype/`.
+ * Careful: there is no « CRM Contact » doctype. The `crm_contacts` folder defines
+ * `CRM Contacts`, a child table (`"istable": 1`) used in the `contacts` field of
+ * `CRM Deal`. Frappe CRM relies on the core Frappe `Contact` doctype instead
+ * (see `CRM Deal.contact`, a Link to `Contact`).
  */
 export const DOCTYPE_BY_RESOURCE = {
 	lead: 'CRM Lead',

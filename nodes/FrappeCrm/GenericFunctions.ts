@@ -9,31 +9,31 @@ import type {
 import { NodeApiError } from 'n8n-workflow';
 
 /**
- * Couche transport partagée par tous les nœuds Frappe.
+ * Transport layer shared by every Frappe node.
  *
- * Rien ici n'est spécifique au CRM : les futurs nœuds Helpdesk et LMS peuvent
- * importer ces fonctions telles quelles, elles ne connaissent que le credential
- * `frappeApi` et l'API REST générique de Frappe.
+ * Nothing here is CRM-specific: the upcoming Helpdesk and LMS nodes can import these
+ * functions as they are. They only know about the `frappeApi` credential and Frappe's
+ * generic REST API.
  */
 
 const CREDENTIALS_NAME = 'frappeApi';
 
-/** Nombre d'enregistrements demandés par page en pagination automatique. */
+/** Records requested per page when auto-paginating. */
 const AUTO_PAGE_SIZE = 100;
 
-/** Garde-fou : au-delà, on considère que la pagination ne converge pas. */
+/** Safety net: beyond this, pagination is assumed not to converge. */
 const MAX_AUTO_PAGES = 1000;
 
 /**
- * Chemins d'applications Frappe montées en SPA. Ils n'appartiennent pas à l'API :
- * `/api/...` vit toujours à la racine du site. On les retire pour tolérer qu'un
- * utilisateur colle l'URL affichée dans son navigateur (ex. https://site/crm).
+ * Frappe application paths mounted as SPAs. They are not part of the API — `/api/...`
+ * always lives at the site root. Stripping them lets a user paste the URL their browser
+ * displays (e.g. https://site/crm) instead of the bare site root.
  */
 const SPA_MOUNT_PATHS = ['crm', 'helpdesk', 'lms', 'hr', 'insights', 'builder', 'app'];
 
 /**
- * Normalise l'URL de site saisie dans le credential : retire le slash final et,
- * le cas échéant, le chemin de la SPA.
+ * Normalizes the site URL entered in the credential: drops the trailing slash and, when
+ * present, the SPA path.
  */
 export function normalizeSiteUrl(siteUrl: string): string {
 	let normalized = (siteUrl ?? '').trim().replace(/\/+$/, '');
@@ -48,7 +48,7 @@ export function normalizeSiteUrl(siteUrl: string): string {
 	return normalized.replace(/\/+$/, '');
 }
 
-/** Retire les balises HTML et décode les entités les plus courantes. */
+/** Strips HTML tags and decodes the most common entities. */
 function stripHtml(value: string): string {
 	return value
 		.replace(/<br\s*\/?>/gi, '\n')
@@ -66,9 +66,9 @@ function stripHtml(value: string): string {
 }
 
 /**
- * Extrait les messages de `_server_messages`, que Frappe encode en JSON **dans**
- * du JSON : une chaîne contenant un tableau de chaînes, chacune étant elle-même
- * un objet JSON `{"message": "...", "title": "..."}`.
+ * Extracts the messages from `_server_messages`, which Frappe encodes as JSON **inside**
+ * JSON: a string holding an array of strings, each of which is itself a JSON object
+ * `{"message": "...", "title": "..."}`.
  */
 function parseServerMessages(raw: unknown): string[] {
 	if (typeof raw !== 'string' || raw.length === 0) return [];
@@ -96,7 +96,7 @@ function parseServerMessages(raw: unknown): string[] {
 				if (typeof candidate === 'string') message = candidate;
 			}
 		} catch {
-			// L'entrée n'était pas du JSON imbriqué : on la garde telle quelle.
+			// The entry was not nested JSON: keep it as-is.
 		}
 
 		const cleaned = stripHtml(message);
@@ -107,8 +107,8 @@ function parseServerMessages(raw: unknown): string[] {
 }
 
 /**
- * Retire le préfixe de classe d'exception Python :
- * `frappe.exceptions.ValidationError: Statut requis` -> `Statut requis`.
+ * Strips the Python exception class prefix:
+ * `frappe.exceptions.ValidationError: Status required` -> `Status required`.
  */
 function cleanException(exception: string): string {
 	const match = /^([A-Za-z_][\w.]*Error|[A-Za-z_][\w.]*Exception):\s*([\s\S]+)$/.exec(
@@ -118,13 +118,13 @@ function cleanException(exception: string): string {
 }
 
 /**
- * Construit un message lisible à partir du corps d'erreur renvoyé par Frappe,
- * plutôt que de se contenter du code HTTP.
+ * Builds a readable message from the error body Frappe returns, rather than settling for
+ * the bare HTTP status code.
  */
 export function parseFrappeError(body: unknown, statusCode: number): string {
 	if (typeof body === 'string') {
 		const cleaned = stripHtml(body);
-		// Une page d'erreur HTML complète n'apprend rien d'utile.
+		// A full HTML error page teaches the user nothing useful.
 		if (cleaned.length > 0 && cleaned.length < 500) return cleaned;
 		return `La requête Frappe a échoué (HTTP ${statusCode})`;
 	}
@@ -151,7 +151,7 @@ export function parseFrappeError(body: unknown, statusCode: number): string {
 	return `La requête Frappe a échoué (HTTP ${statusCode})`;
 }
 
-/** Sérialise les valeurs structurées (filters, fields, or_filters) attendues en JSON par Frappe. */
+/** Serializes the structured values (filters, fields, or_filters) Frappe expects as JSON. */
 export function serializeQuery(qs: IDataObject): IDataObject {
 	const serialized: IDataObject = {};
 
@@ -165,8 +165,8 @@ export function serializeQuery(qs: IDataObject): IDataObject {
 }
 
 /**
- * Exécute une requête authentifiée contre l'API REST Frappe et renvoie le contenu
- * de l'enveloppe `{ "data": ... }`.
+ * Performs an authenticated request against the Frappe REST API and returns the contents
+ * of the `{ "data": ... }` envelope.
  */
 export async function frappeApiRequest<T = IDataObject>(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
@@ -185,7 +185,7 @@ export async function frappeApiRequest<T = IDataObject>(
 		url: endpoint,
 		headers: { Accept: 'application/json' },
 		json: true,
-		// On inspecte nous-mêmes le corps pour produire le message d'erreur Frappe.
+		// We inspect the body ourselves to build the Frappe error message.
 		returnFullResponse: true,
 		ignoreHttpStatusErrors: true,
 	};
@@ -229,8 +229,8 @@ export async function frappeApiRequest<T = IDataObject>(
 }
 
 /**
- * Parcourt toutes les pages d'un doctype via `limit_start` / `limit_page_length`,
- * et renvoie l'ensemble des enregistrements.
+ * Walks every page of a doctype through `limit_start` / `limit_page_length` and returns
+ * all the records.
  */
 export async function frappeApiRequestAllItems(
 	this: IExecuteFunctions,
@@ -259,7 +259,7 @@ export async function frappeApiRequestAllItems(
 
 		returnData.push(...batch);
 
-		// Page incomplète : c'est la dernière.
+		// A short page means this was the last one.
 		if (batch.length < AUTO_PAGE_SIZE) break;
 
 		start += AUTO_PAGE_SIZE;

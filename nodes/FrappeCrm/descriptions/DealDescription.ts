@@ -11,7 +11,7 @@ const NO_OF_EMPLOYEES_OPTIONS = [
 	{ name: '1000+', value: '1000+' },
 ];
 
-/** Champs de `CRM Deal`. Aucun n'est obligatoire côté API : Frappe déduit le statut par défaut. */
+/** `CRM Deal` fields. None is required API-side: Frappe infers the default status. */
 const dealFields: INodeProperties[] = [
 	{
 		displayName: 'Annual Revenue',

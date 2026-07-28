@@ -18,21 +18,21 @@ import {
 import { frappeApiRequest, frappeApiRequestAllItems } from './GenericFunctions';
 import { getDoctype } from './types';
 
-/** Champs de type Date (jour seul) parmi ceux exposés par le nœud. */
+/** Date fields (day only) among those exposed by the node. */
 const DATE_FIELDS = new Set(['start_date', 'expected_closure_date', 'closed_date']);
 
-/** Champs de type Datetime parmi ceux exposés par le nœud. */
+/** Datetime fields among those exposed by the node. */
 const DATETIME_FIELDS = new Set(['due_date']);
 
-/** Date ou datetime sans indication de fuseau : `2026-08-15`, `2026-08-15T17:00:00`. */
+/** Date or datetime carrying no timezone: `2026-08-15`, `2026-08-15T17:00:00`. */
 const NAIVE_DATE_PATTERN = /^(\d{4}-\d{2}-\d{2})(?:[T ](\d{2}:\d{2})(?::(\d{2}))?)?$/;
 
 /**
- * Formate un instant en heure murale d'un fuseau donné.
+ * Formats an instant as wall-clock time in a given timezone.
  *
- * `toISOString()` donnerait de l'UTC, ce qui est faux ici : Frappe stocke des datetimes
- * *naïfs*, interprétés dans le fuseau du site. Une échéance choisie à 17h00 à Paris doit
- * donc partir en `17:00:00`, pas en `15:00:00`.
+ * `toISOString()` would yield UTC, which is wrong here: Frappe stores *naive* datetimes,
+ * interpreted in the site's timezone. A due date picked at 17:00 in Paris must therefore
+ * be sent as `17:00:00`, not `15:00:00`.
  */
 function formatInTimeZone(date: Date, timeZone: string, withTime: boolean): string {
 	const parts = new Intl.DateTimeFormat('en-CA', {
@@ -52,12 +52,12 @@ function formatInTimeZone(date: Date, timeZone: string, withTime: boolean): stri
 }
 
 /**
- * n8n renvoie les champs dateTime en ISO 8601 ; Frappe attend `YYYY-MM-DD` pour un champ
- * Date et `YYYY-MM-DD HH:mm:ss` pour un champ Datetime, exprimés dans le fuseau du site.
+ * n8n returns dateTime fields as ISO 8601; Frappe expects `YYYY-MM-DD` for a Date field
+ * and `YYYY-MM-DD HH:mm:ss` for a Datetime field, both expressed in the site's timezone.
  *
- * Une valeur portant un fuseau (`...Z` ou `...+02:00`) est convertie vers `timeZone`,
- * celui du workflow n8n. Une valeur déjà naïve est reprise telle quelle : l'utilisateur a
- * saisi une heure murale, la réinterpréter la décalerait.
+ * A value carrying a timezone (`...Z` or `...+02:00`) is converted to `timeZone`, that of
+ * the n8n workflow. A value that is already naive is passed through untouched: the user
+ * entered wall-clock time, and reinterpreting it would shift it.
  */
 function normalizeDates(fields: IDataObject, timeZone: string): IDataObject {
 	const normalized: IDataObject = {};
@@ -89,10 +89,10 @@ function normalizeDates(fields: IDataObject, timeZone: string): IDataObject {
 }
 
 /**
- * Convertit les champs plats Email/Mobile/Phone en lignes de tables enfants.
+ * Converts the flat Email/Mobile/Phone fields into child table rows.
  *
- * Frappe recalcule `Contact.email_id` depuis `email_ids` et remet le champ à vide si
- * la table est vide : envoyer `email_id` directement n'a donc aucun effet.
+ * Frappe recomputes `Contact.email_id` from `email_ids` and blanks the field out when the
+ * table is empty, so sending `email_id` directly has no effect.
  */
 function buildContactBody(fields: IDataObject): IDataObject {
 	const body: IDataObject = { ...fields };
@@ -122,7 +122,7 @@ function buildContactBody(fields: IDataObject): IDataObject {
 	return body;
 }
 
-/** Parse un paramètre JSON saisi dans l'UI, en tolérant qu'une expression ait déjà produit un objet. */
+/** Parses a JSON parameter entered in the UI, tolerating an expression that already produced an object. */
 function parseJsonParameter(
 	context: IExecuteFunctions,
 	value: unknown,
@@ -165,16 +165,16 @@ export class FrappeCrm implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Frappe CRM',
 		name: 'frappeCrm',
-		// Logo Frappe CRM : badge à fond magenta #ef0bf5 opaque, glyphe blanc en négatif.
-		// Fichier unique, donc magenta identique sur les deux thèmes, par choix : le badge
-		// porte son propre fond et tient le contraste sur clair comme sur sombre. Cela
-		// laisse le warning `icon-prefer-themed-variants` (non bloquant, lint sort en 0) ;
-		// la forme { light, dark } impose deux fichiers de chemins distincts, donc une
-		// teinte différente d'un côté.
+		// Frappe CRM logo: opaque magenta #ef0bf5 badge with the glyph knocked out in white.
+		// A single file, hence the same magenta on both themes, by choice: the badge carries
+		// its own background and holds contrast on light as well as dark. This leaves the
+		// `icon-prefer-themed-variants` warning (non-blocking, lint exits 0); the
+		// { light, dark } form requires two distinct file paths, hence a different tint on
+		// one of the themes.
 		//
-		// Si des variantes monochromes sont réintroduites un jour : dans n8n, la clé
-		// désigne le thème de l'interface, pas la couleur de l'encre. Une icône blanche
-		// va sous `dark`, une icône noire sous `light` — l'inverse les rend invisibles.
+		// Should monochrome variants ever be reintroduced: in n8n the key names the UI
+		// theme, not the ink colour. A white icon belongs under `dark`, a black one under
+		// `light` — the other way round makes them invisible.
 		icon: 'file:../../icons/frappe-crm.svg',
 		group: ['transform'],
 		version: 1,
@@ -234,7 +234,7 @@ export class FrappeCrm implements INodeType {
 
 					let body: IDataObject = { ...collected };
 
-					// Les champs obligatoires sont exposés au premier niveau, hors collection.
+					// Required fields are exposed at the top level, outside the collection.
 					if (operation === 'create') {
 						if (resource === 'lead' || resource === 'contact') {
 							body.first_name = this.getNodeParameter('first_name', i) as string;
@@ -294,7 +294,7 @@ export class FrappeCrm implements INodeType {
 
 					const qs: IDataObject = {};
 
-					// Sans `fields`, Frappe ne renvoie que la colonne `name`.
+					// Without `fields`, Frappe returns the `name` column only.
 					qs.fields =
 						typeof options.fields === 'string' && options.fields.trim() !== ''
 							? parseFieldList(options.fields)
@@ -335,8 +335,8 @@ export class FrappeCrm implements INodeType {
 					);
 				}
 			} catch (error) {
-				// frappeApiRequest lève déjà une NodeApiError porteuse du message Frappe ;
-				// on ne réenveloppe que les erreurs inattendues.
+				// frappeApiRequest already throws a NodeApiError carrying the Frappe message;
+				// only unexpected errors get wrapped here.
 				const nodeError =
 					error instanceof NodeApiError || error instanceof NodeOperationError
 						? error

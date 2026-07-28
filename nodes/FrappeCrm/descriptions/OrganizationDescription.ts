@@ -12,10 +12,10 @@ const NO_OF_EMPLOYEES_OPTIONS = [
 ];
 
 /**
- * Champs de `CRM Organization`.
+ * `CRM Organization` fields.
  *
- * Le doctype utilise `autoname: field:organization_name` : le nom de l'organisation
- * *est* l'identifiant du document. Le modifier renomme l'enregistrement.
+ * The doctype uses `autoname: field:organization_name`: the organization name *is* the
+ * document identifier. Changing it renames the record.
  */
 const organizationFields: INodeProperties[] = [
 	{

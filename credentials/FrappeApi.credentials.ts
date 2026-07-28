@@ -6,12 +6,12 @@ import type {
 } from 'n8n-workflow';
 
 /**
- * Credential Frappe générique.
+ * Generic Frappe credential.
  *
- * Volontairement dépourvu de toute notion propre à un produit : il cible un *site*
- * Frappe, pas une application. Les nœuds Frappe CRM, Frappe Helpdesk et Frappe LMS
- * déclarent tous `{ name: 'frappeApi', required: true }` et se partagent la même
- * instance de credential. Voir docs/CREDENTIALS.md.
+ * Deliberately free of any product-specific notion: it targets a Frappe *site*, not an
+ * application. The Frappe CRM, Frappe Helpdesk and Frappe LMS nodes all declare
+ * `{ name: 'frappeApi', required: true }` and share the same credential instance.
+ * See docs/CREDENTIALS.md.
  */
 export class FrappeApi implements ICredentialType {
 	name = 'frappeApi';

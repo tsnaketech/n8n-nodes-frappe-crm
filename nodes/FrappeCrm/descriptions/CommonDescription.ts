@@ -1,20 +1,20 @@
 import type { INodeProperties } from 'n8n-workflow';
 
 /**
- * Fabriques de propriétés communes aux six resources : les opérations CRUD sont
- * identiques d'un doctype à l'autre, seuls les libellés et les champs métier changent.
+ * Property factories shared by the six resources: the CRUD operations are identical from
+ * one doctype to the next, only the labels and the business fields differ.
  */
 
 /**
- * Retire des champs d'une liste partagée. Sert à construire « Additional Fields »
- * (création) à partir de la liste complète, en excluant les champs déjà exposés au
- * premier niveau parce qu'ils sont obligatoires.
+ * Removes fields from a shared list. Used to build « Additional Fields » (create) out of
+ * the full list, excluding the fields already exposed at the top level because they are
+ * required.
  */
 export function omitFields(fields: INodeProperties[], names: string[]): INodeProperties[] {
 	return fields.filter((field) => !names.includes(field.name));
 }
 
-/** Les cinq opérations CRUD, déclinées pour une resource donnée. */
+/** The five CRUD operations, specialised for a given resource. */
 export function operationsFor(resource: string, singular: string): INodeProperties {
 	return {
 		displayName: 'Operation',
@@ -59,7 +59,7 @@ export function operationsFor(resource: string, singular: string): INodeProperti
 }
 
 /**
- * Identifiant du document (le champ `name` de Frappe), requis par get/update/delete.
+ * Document identifier (Frappe's `name` field), required by get/update/delete.
  */
 export function documentIdField(resource: string, description: string): INodeProperties {
 	return {
@@ -74,10 +74,10 @@ export function documentIdField(resource: string, description: string): INodePro
 }
 
 /**
- * Pagination et options de lecture pour « Get Many ».
+ * Pagination and read options for « Get Many ».
  *
- * `returnAll` déclenche la pagination automatique par `limit_start`; sinon `limit`
- * est envoyé tel quel dans `limit_page_length`.
+ * `returnAll` triggers automatic pagination through `limit_start`; otherwise `limit` is
+ * sent as-is in `limit_page_length`.
  */
 export function getManyFields(resource: string): INodeProperties[] {
 	return [

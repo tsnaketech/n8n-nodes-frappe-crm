@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 import { documentIdField, getManyFields, omitFields, operationsFor } from './CommonDescription';
 
-/** Champs de `FCRM Note`. Seul `title` est obligatoire. */
+/** `FCRM Note` fields. Only `title` is required. */
 const noteFields: INodeProperties[] = [
 	{
 		displayName: 'Content',
