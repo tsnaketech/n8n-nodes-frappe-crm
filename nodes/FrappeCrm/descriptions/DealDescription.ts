@@ -1,0 +1,216 @@
+import type { INodeProperties } from 'n8n-workflow';
+
+import { documentIdField, getManyFields, operationsFor } from './CommonDescription';
+
+const NO_OF_EMPLOYEES_OPTIONS = [
+	{ name: '1-10', value: '1-10' },
+	{ name: '11-50', value: '11-50' },
+	{ name: '51-200', value: '51-200' },
+	{ name: '201-500', value: '201-500' },
+	{ name: '501-1000', value: '501-1000' },
+	{ name: '1000+', value: '1000+' },
+];
+
+/** Champs de `CRM Deal`. Aucun n'est obligatoire côté API : Frappe déduit le statut par défaut. */
+const dealFields: INodeProperties[] = [
+	{
+		displayName: 'Annual Revenue',
+		name: 'annual_revenue',
+		type: 'number',
+		default: 0,
+		description: "Chiffre d'affaires annuel de l'organisation",
+	},
+	{
+		displayName: 'Close Date',
+		name: 'closed_date',
+		type: 'dateTime',
+		default: '',
+		description: 'Date de clôture effective',
+	},
+	{
+		displayName: 'Contact',
+		name: 'contact',
+		type: 'string',
+		default: '',
+		description: 'Lien vers un enregistrement du doctype Contact',
+	},
+	{
+		displayName: 'Currency',
+		name: 'currency',
+		type: 'string',
+		default: '',
+		description: 'Code devise, lien vers le doctype Currency (ex. EUR, USD).',
+	},
+	{
+		displayName: 'Deal Owner',
+		name: 'deal_owner',
+		type: 'string',
+		default: '',
+		description: "Email de l'utilisateur propriétaire de l'affaire",
+	},
+	{
+		displayName: 'Email',
+		name: 'email',
+		type: 'string',
+		placeholder: 'nom@email.com',
+		default: '',
+		description: 'Adresse email du contact principal',
+	},
+	{
+		displayName: 'Expected Closure Date',
+		name: 'expected_closure_date',
+		type: 'dateTime',
+		default: '',
+		description: 'Date de clôture prévisionnelle',
+	},
+	{
+		displayName: 'Expected Deal Value',
+		name: 'expected_deal_value',
+		type: 'number',
+		default: 0,
+		description: "Montant prévisionnel de l'affaire",
+	},
+	{
+		displayName: 'First Name',
+		name: 'first_name',
+		type: 'string',
+		default: '',
+		description: 'Prénom du contact principal',
+	},
+	{
+		displayName: 'Industry',
+		name: 'industry',
+		type: 'string',
+		default: '',
+		description: 'Lien vers un enregistrement du doctype CRM Industry',
+	},
+	{
+		displayName: 'Job Title',
+		name: 'job_title',
+		type: 'string',
+		default: '',
+		description: 'Intitulé de poste du contact principal',
+	},
+	{
+		displayName: 'Last Name',
+		name: 'last_name',
+		type: 'string',
+		default: '',
+		description: 'Nom de famille du contact principal',
+	},
+	{
+		displayName: 'Lead',
+		name: 'lead',
+		type: 'string',
+		default: '',
+		description: "Lien vers le CRM Lead d'origine, si l'affaire provient d'une conversion",
+	},
+	{
+		displayName: 'Lost Reason',
+		name: 'lost_reason',
+		type: 'string',
+		default: '',
+		description: 'Lien vers un enregistrement du doctype CRM Lost Reason',
+	},
+	{
+		displayName: 'Mobile Number',
+		name: 'mobile_no',
+		type: 'string',
+		default: '',
+		description: 'Numéro de mobile du contact principal',
+	},
+	{
+		displayName: 'Next Step',
+		name: 'next_step',
+		type: 'string',
+		default: '',
+		description: 'Prochaine action prévue',
+	},
+	{
+		displayName: 'Number of Employees',
+		name: 'no_of_employees',
+		type: 'options',
+		options: NO_OF_EMPLOYEES_OPTIONS,
+		default: '1-10',
+		description: "Tranche d'effectif de l'organisation",
+	},
+	{
+		displayName: 'Organization',
+		name: 'organization',
+		type: 'string',
+		default: '',
+		description:
+			"Lien vers un enregistrement du doctype CRM Organization. Il s'agit du nom de l'organisation, qui sert d'identifiant.",
+	},
+	{
+		displayName: 'Phone',
+		name: 'phone',
+		type: 'string',
+		default: '',
+		description: 'Numéro de téléphone fixe',
+	},
+	{
+		displayName: 'Probability',
+		name: 'probability',
+		type: 'number',
+		default: 0,
+		typeOptions: { minValue: 0, maxValue: 100 },
+		description: 'Probabilité de conclusion, en pourcentage',
+	},
+	{
+		displayName: 'Source',
+		name: 'source',
+		type: 'string',
+		default: '',
+		description: 'Lien vers un enregistrement du doctype CRM Lead Source',
+	},
+	{
+		displayName: 'Status',
+		name: 'status',
+		type: 'string',
+		default: '',
+		description:
+			'Lien vers un enregistrement du doctype CRM Deal Status (ex. Qualification, Demo/Making, Negotiation, Won, Lost). Frappe applique le statut par défaut si le champ est laissé vide.',
+	},
+	{
+		displayName: 'Territory',
+		name: 'territory',
+		type: 'string',
+		default: '',
+		description: 'Lien vers un enregistrement du doctype CRM Territory',
+	},
+	{
+		displayName: 'Website',
+		name: 'website',
+		type: 'string',
+		default: '',
+		description: "Site web de l'organisation",
+	},
+];
+
+export const dealDescription: INodeProperties[] = [
+	operationsFor('deal', 'deal'),
+	documentIdField(
+		'deal',
+		'Champ « name » de l\'enregistrement Frappe. Pour une affaire il ressemble à CRM-DEAL-2026-00001.',
+	),
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add field',
+		default: {},
+		displayOptions: { show: { resource: ['deal'], operation: ['create'] } },
+		options: dealFields,
+	},
+	{
+		displayName: 'Update Fields',
+		name: 'updateFields',
+		type: 'collection',
+		placeholder: 'Add field',
+		default: {},
+		displayOptions: { show: { resource: ['deal'], operation: ['update'] } },
+		options: dealFields,
+	},
+	...getManyFields('deal'),
+];
