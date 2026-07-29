@@ -54,9 +54,16 @@ Les requêtes sont authentifiées par le header `Authorization: token {apiKey}:{
 
 ### Un seul credential pour tous les nœuds Frappe
 
-`frappeApi` n'est délibérément **pas** spécifique au CRM. Frappe authentifie *un utilisateur sur un site*, pas une application : la même clé d'API fonctionne pour Frappe CRM, Frappe Helpdesk et Frappe LMS, qui vivent sur le même site et partagent le même endpoint `/api`.
+`frappeApi` n'est délibérément **pas** spécifique au CRM. Frappe authentifie *un utilisateur sur un site*, pas une application : la même clé d'API fonctionne pour Frappe CRM, Frappe Helpdesk, Frappe HR et Frappe LMS, qui vivent sur le même site et partagent le même endpoint `/api`.
 
-Les futurs nœuds Frappe Helpdesk et Frappe LMS de ce package réutiliseront exactement ce credential : vous configurez votre site une fois, et tous les nœuds Frappe peuvent le sélectionner. Créez un credential par *site* (« Frappe – prod », « Frappe – recette »), pas un par application.
+Les packages compagnons embarquent exactement le même credential, sous le même nom interne `frappeApi` :
+
+| Package                      | Nœud            |
+| ---------------------------- | --------------- |
+| `n8n-nodes-frappe-helpdesk`  | Frappe Helpdesk |
+| `n8n-nodes-frappe-hrms`      | Frappe HRMS     |
+
+Installez-en plusieurs et n8n n'affiche qu'**un seul** type de credential « Frappe API » : vous configurez votre site une fois, et tous les nœuds Frappe peuvent le sélectionner. Créez un credential par *site* (« Frappe – prod », « Frappe – recette »), pas un par application.
 
 Voir [docs/CREDENTIALS.md](docs/CREDENTIALS.md) pour l'architecture complète et la marche à suivre pour brancher un nouveau nœud Frappe sur ce credential.
 

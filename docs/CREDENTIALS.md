@@ -1,24 +1,43 @@
 # Architecture du credential partagé `frappeApi`
 
-Ce dépôt a vocation à héberger plusieurs nœuds n8n pour les applications Frappe
-(CRM, Helpdesk, LMS…). Tous s'authentifient **de la même façon**, contre le même site.
-Le credential `frappeApi` est donc défini une seule fois et partagé, plutôt que dupliqué
-par produit.
+Ce package fait partie d'une suite de nœuds n8n pour les applications Frappe
+(CRM, Helpdesk, HRMS, LMS…). Tous s'authentifient **de la même façon**, contre le même
+site. Le credential `frappeApi` est donc défini une seule fois et partagé, plutôt que
+dupliqué par produit.
 
 ## Pourquoi un seul credential
 
 Frappe Framework n'authentifie pas « une application », il authentifie **un utilisateur
 sur un site**. Une paire API Key / API Secret est émise pour un utilisateur Frappe et
-vaut pour toutes les applications installées sur ce site — le CRM, le Helpdesk et le LMS
-partagent la même base, les mêmes utilisateurs et le même endpoint `/api`.
+vaut pour toutes les applications installées sur ce site — le CRM, le Helpdesk, Frappe HR
+et le LMS partagent la même base, les mêmes utilisateurs et le même endpoint `/api`.
 
-Créer un `frappeCrmApi`, un `frappeHelpdeskApi` et un `frappeLmsApi` reviendrait donc à
+Créer un `frappeCrmApi`, un `frappeHelpdeskApi` et un `frappeHrmsApi` reviendrait donc à
 demander trois fois la même chose à l'utilisateur, avec trois fois le risque de la saisir
 différemment. Un seul credential veut dire :
 
 - une seule saisie d'URL, de clé et de secret, même si l'utilisateur installe les trois nœuds ;
 - une rotation de clé à faire à un seul endroit ;
 - un test de connexion qui vaut pour tous les nœuds.
+
+## Nœuds consommateurs
+
+| Nœud                | Package npm                 | Doctypes visés                                                                 | État             |
+| ------------------- | --------------------------- | ------------------------------------------------------------------------------ | ---------------- |
+| **Frappe CRM**      | `n8n-nodes-frappe-crm`      | `CRM Lead`, `CRM Deal`, `Contact`, `CRM Organization`, `CRM Task`, `FCRM Note`  | livré (ce dépôt) |
+| **Frappe Helpdesk** | `n8n-nodes-frappe-helpdesk` | `HD Ticket`, `HD Customer`, `HD Team`, `HD Ticket Priority`, `HD Ticket Type` (+ `HD Ticket Status` et `HD Agent` en lecture) | livré |
+| **Frappe HRMS**     | `n8n-nodes-frappe-hrms`     | `Employee`, `Leave Application`, `Attendance`, `Expense Claim`, `Salary Slip`, `Job Opening`, `Job Applicant`, `Job Offer` | livré |
+| **Frappe LMS**      | à créer                     | `LMS Course`, …                                                                | à venir          |
+
+Aucun de ces nœuds **ne définit de variante** du credential : chaque description déclare
+`credentials: [{ name: 'frappeApi', required: true }]`, à l'identique.
+
+> Note d'empaquetage : n8n charge les credentials par package npm. Chaque package embarque
+> donc son propre fichier `credentials/FrappeApi.credentials.ts`, mais tous exposent le
+> **même** `name = 'frappeApi'` et les mêmes noms de champs. Un utilisateur qui installe
+> CRM, Helpdesk et HRMS voit un seul type « Frappe API » et configure son site une fois.
+> **Toute modification du fichier doit être répercutée à l'identique dans les autres
+> packages**, sinon deux définitions divergentes se disputent le même nom interne.
 
 ## Ce que le credential contient
 
@@ -59,14 +78,14 @@ bien que la racine du site — l'API vit toujours à la racine.
 Rien à créer : il suffit de le référencer par son nom interne.
 
 ```ts
-export class FrappeHelpdesk implements INodeType {
+export class FrappeLms implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Frappe Helpdesk',
-		name: 'frappeHelpdesk',
+		displayName: 'Frappe LMS',
+		name: 'frappeLms',
 		// ...
 		credentials: [
 			{
-				name: 'frappeApi', // exactement le même que le nœud Frappe CRM
+				name: 'frappeApi', // exactement le même que les nœuds Frappe CRM et Frappe HRMS
 				required: true,
 			},
 		],
@@ -74,27 +93,35 @@ export class FrappeHelpdesk implements INodeType {
 }
 ```
 
+Si le nœud vit dans un **nouveau package**, copier `credentials/FrappeApi.credentials.ts`
+tel quel : c'est le nom interne identique qui fait la fusion côté n8n, pas le partage du
+fichier. Ne rien renommer, ne rien retirer — voir « Compatibilité à préserver » plus bas.
+
 ### 2. Réutiliser la couche transport
 
 `nodes/FrappeCrm/GenericFunctions.ts` ne contient rien de spécifique au CRM :
 `frappeApiRequest`, `frappeApiRequestAllItems` et `parseFrappeError` ne connaissent que
-le credential `frappeApi` et l'API REST générique de Frappe. Un nœud Helpdesk peut les
-importer directement :
+le credential `frappeApi` et l'API REST générique de Frappe. Un nœud du même package peut
+les importer directement :
 
 ```ts
 import { frappeApiRequest } from '../FrappeCrm/GenericFunctions';
 
-const tickets = await frappeApiRequest.call(this, 'GET', '/api/resource/HD Ticket');
+const courses = await frappeApiRequest.call(this, 'GET', '/api/resource/LMS Course');
 ```
 
-Si un troisième nœud arrive, il sera temps de déplacer ce fichier vers un
-`nodes/shared/` commun. Tant qu'il n'y en a que deux, l'import direct évite une
+Dans un package séparé, le fichier se copie — c'est ce que font `n8n-nodes-frappe-helpdesk`
+et `n8n-nodes-frappe-hrms`, qui n'y ajoutent que des helpers `/api/method/`
+(`frappeMethodRequest`, `frappeRunDocMethod`) sans toucher à l'existant.
+
+Si un deuxième nœud arrive dans **ce** package, il sera temps de déplacer ce fichier vers
+un `nodes/shared/` commun. Tant qu'il n'y en a qu'un, l'import direct évite une
 indirection prématurée — mais **le fichier ne doit rien apprendre du CRM** : toute logique
 propre à un doctype a sa place dans `FrappeCrm.node.ts`, pas ici.
 
 ### 3. Déclarer le nœud dans `package.json`
 
-Le credential reste déclaré une seule fois, quel que soit le nombre de nœuds :
+Le credential reste déclaré une seule fois, quel que soit le nombre de nœuds du package :
 
 ```json
 {
@@ -102,7 +129,7 @@ Le credential reste déclaré une seule fois, quel que soit le nombre de nœuds 
 		"credentials": ["dist/credentials/FrappeApi.credentials.js"],
 		"nodes": [
 			"dist/nodes/FrappeCrm/FrappeCrm.node.js",
-			"dist/nodes/FrappeHelpdesk/FrappeHelpdesk.node.js"
+			"dist/nodes/FrappeLms/FrappeLms.node.js"
 		]
 	}
 }
@@ -111,9 +138,9 @@ Le credential reste déclaré une seule fois, quel que soit le nombre de nœuds 
 ## Côté utilisateur
 
 Dans n8n, une instance de credential « Frappe API » configurée pour un site est
-sélectionnable depuis n'importe quel nœud Frappe de ce package. Un utilisateur qui gère
-plusieurs sites crée une instance par site (« Frappe – prod », « Frappe – recette »), pas
-une par application.
+sélectionnable depuis n'importe quel nœud Frappe, quel que soit le package qui le fournit.
+Un utilisateur qui gère plusieurs sites crée une instance par site
+(« Frappe – prod », « Frappe – recette »), pas une par application.
 
 ## Compatibilité à préserver
 

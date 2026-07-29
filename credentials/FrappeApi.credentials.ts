@@ -9,9 +9,14 @@ import type {
  * Generic Frappe credential.
  *
  * Deliberately free of any product-specific notion: it targets a Frappe *site*, not an
- * application. The Frappe CRM, Frappe Helpdesk and Frappe LMS nodes all declare
- * `{ name: 'frappeApi', required: true }` and share the same credential instance.
+ * application. The Frappe CRM, Frappe Helpdesk, Frappe HRMS and Frappe LMS nodes all
+ * declare `{ name: 'frappeApi', required: true }` and share the same credential instance.
  * See docs/CREDENTIALS.md.
+ *
+ * The internal name `frappeApi` and the field names are identical to the ones shipped by
+ * the `n8n-nodes-frappe-helpdesk` and `n8n-nodes-frappe-hrms` packages, on purpose: a user
+ * running several of them sees a single « Frappe API » credential type and configures
+ * their site once. Any change here has to be mirrored there.
  */
 export class FrappeApi implements ICredentialType {
 	name = 'frappeApi';

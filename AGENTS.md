@@ -7,17 +7,22 @@ Guide pour les agents IA travaillant sur ce dépôt.
 Package de nœuds communautaires n8n, écrit en TypeScript, publié sous le nom
 `n8n-nodes-frappe-crm` (dépôt : github.com/tsnaketech/n8n-nodes-frappe-crm).
 
-Objectif : une **suite** de nœuds pour les applications Frappe. Seul le nœud Frappe CRM
-existe aujourd'hui ; les nœuds Frappe Helpdesk et Frappe LMS sont prévus. Le template de
-départ (`ExampleNode` / `ExampleApi`) a été supprimé.
+Objectif : une **suite** de nœuds pour les applications Frappe. Ce package ne contient que
+le nœud Frappe CRM. Les nœuds Frappe Helpdesk et Frappe HRMS existent, dans des packages
+séparés (`n8n-nodes-frappe-helpdesk`, `n8n-nodes-frappe-hrms`) ; Frappe LMS reste prévu. Le
+template de départ (`ExampleNode` / `ExampleApi`) a été supprimé.
 
-Le point structurant : les trois applications tournent sur le même site Frappe et
+Le point structurant : toutes ces applications tournent sur le même site Frappe et
 partagent la même authentification. Le credential `frappeApi` est donc **unique et
 générique** — il ne connaît que la racine du site, jamais un doctype ni un produit. Ne pas
 créer de credential par application. Voir `docs/CREDENTIALS.md`, qui fait référence sur ce
 point.
 
-Le dépôt n'est pas initialisé sous git (`git init` reste à faire si besoin).
+**Chaque package embarque sa copie de `credentials/FrappeApi.credentials.ts`** — n8n charge
+les credentials par package npm. Les copies exposent le même `name = 'frappeApi'` et les
+mêmes champs, ce qui n'en fait qu'un seul type côté utilisateur. Toute modification de ce
+fichier, ou de `GenericFunctions.ts`, doit être répercutée à l'identique dans les packages
+Helpdesk et HRMS, sinon deux définitions divergentes se disputent le même nom interne.
 
 ## Structure
 
@@ -27,15 +32,17 @@ nodes/FrappeCrm/GenericFunctions.ts     Transport Frappe : requêtes, pagination
 nodes/FrappeCrm/types.ts                Map resource n8n -> doctype Frappe
 nodes/FrappeCrm/descriptions/           Propriétés UI, un fichier par resource
 credentials/FrappeApi.credentials.ts    Credential partagé (siteUrl + apiKey + apiSecret)
-icons/frappe.svg, frappe.dark.svg       Icônes light/dark référencées par le nœud
+icons/frappe-crm.svg                    Icône du nœud Frappe CRM
+icons/frappe.svg, frappe.dark.svg       Icônes light/dark du credential partagé
 docs/CREDENTIALS.md                     Architecture du credential partagé
 .github/workflows/ci.yml                lint + build sur PR et push sur main
 .github/workflows/publish.yml           Publication npm avec provenance sur tag *.*.*
 ```
 
-`GenericFunctions.ts` est volontairement dépourvu de logique CRM : c'est la couche que les
-futurs nœuds Helpdesk et LMS importeront. Toute logique propre à un doctype va dans
-`FrappeCrm.node.ts`. À partir d'un troisième nœud, déplacer ce fichier vers `nodes/shared/`.
+`GenericFunctions.ts` est volontairement dépourvu de logique CRM : les packages Helpdesk et
+HRMS en embarquent la même copie, à laquelle ils n'ajoutent que des helpers `/api/method/`.
+Toute logique propre à un doctype va dans `FrappeCrm.node.ts`. Si un deuxième nœud arrive
+dans ce package, déplacer ce fichier vers `nodes/shared/`.
 
 ## Doctypes Frappe CRM
 

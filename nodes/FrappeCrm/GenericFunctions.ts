@@ -11,8 +11,9 @@ import { NodeApiError } from 'n8n-workflow';
 /**
  * Transport layer shared by every Frappe node.
  *
- * Nothing here is CRM-specific: the upcoming Helpdesk and LMS nodes can import these
- * functions as they are. They only know about the `frappeApi` credential and Frappe's
+ * Nothing here is CRM-specific: the `n8n-nodes-frappe-helpdesk` and `n8n-nodes-frappe-hrms`
+ * packages ship this same file, kept identical apart from the extra `/api/method/` helpers
+ * they need. These functions only know about the `frappeApi` credential and Frappe's
  * generic REST API.
  */
 
