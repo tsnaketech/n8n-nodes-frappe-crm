@@ -27,7 +27,7 @@ différemment. Un seul credential veut dire :
 | **Frappe CRM**      | `n8n-nodes-frappe-crm`      | `CRM Lead`, `CRM Deal`, `Contact`, `CRM Organization`, `CRM Task`, `FCRM Note`  | livré (ce dépôt) |
 | **Frappe Helpdesk** | `n8n-nodes-frappe-helpdesk` | `HD Ticket`, `HD Customer`, `HD Team`, `HD Ticket Priority`, `HD Ticket Type` (+ `HD Ticket Status` et `HD Agent` en lecture) | livré |
 | **Frappe HRMS**     | `n8n-nodes-frappe-hrms`     | `Employee`, `Leave Application`, `Attendance`, `Expense Claim`, `Salary Slip`, `Job Opening`, `Job Applicant`, `Job Offer` | livré |
-| **Frappe LMS**      | à créer                     | `LMS Course`, …                                                                | à venir          |
+| **Frappe Learning** | `n8n-nodes-frappe-learning` | `LMS Course`, `Course Chapter`, `Course Lesson`, `LMS Batch`, `LMS Enrollment`, `LMS Batch Enrollment`, `LMS Quiz`, `LMS Assignment`, `LMS Assignment Submission`, `LMS Certificate` (+ `LMS Quiz Submission` et `LMS Course Progress` en lecture) | livré |
 
 Aucun de ces nœuds **ne définit de variante** du credential : chaque description déclare
 `credentials: [{ name: 'frappeApi', required: true }]`, à l'identique.
