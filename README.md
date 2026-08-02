@@ -302,7 +302,9 @@ The node outputs `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibility
 
-Tested against n8n 1.x and Frappe Framework v15 with Frappe CRM. The node only uses the standard `/api/resource` REST endpoints, so it should work with any Frappe CRM version that keeps the doctype names listed above.
+Tested against n8n 1.x, **Frappe Framework 16.29.0 and Frappe CRM 1.81.0**, with the field list checked against the live doctype metadata. Earlier development happened on Frappe Framework v15.
+
+The node only uses the standard `/api/resource` REST endpoints, so it should work with any Frappe CRM version that keeps the doctype names listed above. One caveat worth knowing: Frappe answers `200 OK` and **silently drops** fields that no longer exist on a doctype, so an upgrade that removes a field shows up as data quietly going missing rather than as an error. If you upgrade Frappe CRM and a field stops being saved, check it still exists via `GET /api/resource/DocType/CRM Organization`.
 
 ## Resources
 

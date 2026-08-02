@@ -46,7 +46,8 @@ dans ce package, déplacer ce fichier vers `nodes/shared/`.
 
 ## Doctypes Frappe CRM
 
-Noms vérifiés dans `crm/fcrm/doctype/` du dépôt frappe/crm. À ne pas deviner :
+Noms vérifiés dans `crm/fcrm/doctype/` du dépôt frappe/crm, puis confrontés au méta d'une
+instance réelle en **Frappe CRM 1.81.0 / Frappe Framework 16.29.0**. À ne pas deviner :
 
 | Resource     | Doctype            |
 | ------------ | ------------------ |
@@ -57,13 +58,29 @@ Noms vérifiés dans `crm/fcrm/doctype/` du dépôt frappe/crm. À ne pas devine
 | Task         | `CRM Task`         |
 | Note         | `FCRM Note`        |
 
-Deux pièges déjà rencontrés, à ne pas réintroduire :
+Trois pièges déjà rencontrés, à ne pas réintroduire :
 
 - **Il n'existe pas de doctype `CRM Contact`.** `crm_contacts` définit `CRM Contacts`, une
   table enfant (`istable: 1`) de `CRM Deal`. Les contacts vivent dans le `Contact` du core.
 - Sur `Contact`, `email_id` / `mobile_no` / `phone` sont **dérivés** des tables enfants
   `email_ids` / `phone_nos` : `set_primary_email()` les vide si la table est vide. Les
   envoyer directement est sans effet — cf. `buildContactBody()` dans le nœud.
+- **Frappe ignore silencieusement un champ inconnu.** Un `POST` contenant un fieldname qui
+  n'existe pas sur le doctype répond `200 OK` et jette la valeur, sans le moindre message.
+  Un champ retiré en amont ne casse donc rien de visible : il devient une option d'UI qui
+  avale ce que l'utilisateur saisit. C'est ce qui est arrivé à `company_description`,
+  `facebook`, `linkedin` et `twitter` de `CRM Organization`, supprimés côté Frappe CRM.
+  D'où la règle : après une montée de version de l'app Frappe, **confronter les fieldnames
+  déclarés au méta live** (`GET /api/resource/DocType/<doctype>`) plutôt que de se fier au
+  fait que les workflows ne remontent pas d'erreur.
+
+Deux points de comportement vérifiés sur l'instance, contre-intuitifs au regard du méta :
+
+- `CRM Lead.status` et `CRM Deal.status` sont `reqd=1` **sans valeur par défaut** dans le
+  méta, mais le contrôleur les remplit (`New`, `Qualification`). Les laisser optionnels
+  dans le nœud est donc correct.
+- Sur `Contact`, `mobile_no` et `phone` sont `read_only` : raison de plus pour passer par
+  les tables enfants.
 
 `tsconfig.json` compile `credentials/**` et `nodes/**` vers `dist/`. Les chemins déclarés
 dans `package.json` → `n8n.nodes` / `n8n.credentials` pointent vers `dist/`, pas vers les
@@ -137,6 +154,17 @@ le supposer sûr. Les `description` doivent rester des chaînes littérales.
 Quatre READMEs traduits (`README.md`, `.fr.md`, `.es.md`, `.de.md`). Un changement visible par
 l'utilisateur (nouvelle opération, nouveau credential, prérequis) doit être répercuté dans
 **les quatre**, sinon les traductions divergent silencieusement.
+
+## GitHub Actions
+
+Les workflows GitHub Actions doivent toujours utiliser des versions existantes et stables
+des actions officielles. **Ne jamais inventer ou supposer une version majeure.**
+
+- Vérifier la dernière version disponible avant de modifier un workflow.
+- Préférer un tag de version (`@v4`, `@v5`, etc.) ou, idéalement, un commit SHA lorsque la
+  reproductibilité ou la sécurité est importante.
+- Si la version n'est pas certaine, consulter le dépôt officiel de l'action plutôt que de
+  la deviner.
 
 ## Publication
 

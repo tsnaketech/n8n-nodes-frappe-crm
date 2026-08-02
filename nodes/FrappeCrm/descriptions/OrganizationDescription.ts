@@ -12,10 +12,15 @@ const NO_OF_EMPLOYEES_OPTIONS = [
 ];
 
 /**
- * `CRM Organization` fields.
+ * `CRM Organization` fields, checked against the doctype meta of Frappe CRM 1.81.0.
  *
  * The doctype uses `autoname: field:organization_name`: the organization name *is* the
  * document identifier. Changing it renames the record.
+ *
+ * `company_description`, `facebook`, `linkedin` and `twitter` used to be listed here but no
+ * longer exist on the doctype. Frappe drops unknown keys instead of rejecting them — the
+ * insert answered `200 OK` with the values silently gone — so exposing them meant offering
+ * fields that quietly discarded what the user typed.
  */
 const organizationFields: INodeProperties[] = [
 	{
@@ -33,14 +38,6 @@ const organizationFields: INodeProperties[] = [
 		description: "Chiffre d'affaires annuel",
 	},
 	{
-		displayName: 'Company Description',
-		name: 'company_description',
-		type: 'string',
-		typeOptions: { rows: 3 },
-		default: '',
-		description: "Description de l'organisation",
-	},
-	{
 		displayName: 'Currency',
 		name: 'currency',
 		type: 'string',
@@ -48,11 +45,11 @@ const organizationFields: INodeProperties[] = [
 		description: 'Code devise, lien vers le doctype Currency (ex. EUR, USD).',
 	},
 	{
-		displayName: 'Facebook',
-		name: 'facebook',
-		type: 'string',
-		default: '',
-		description: 'URL de la page Facebook',
+		displayName: 'Exchange Rate',
+		name: 'exchange_rate',
+		type: 'number',
+		default: 0,
+		description: 'Taux de change entre la devise ci-dessus et la devise du site',
 	},
 	{
 		displayName: 'Industry',
@@ -62,19 +59,20 @@ const organizationFields: INodeProperties[] = [
 		description: 'Lien vers un enregistrement du doctype CRM Industry',
 	},
 	{
-		displayName: 'LinkedIn',
-		name: 'linkedin',
-		type: 'string',
-		default: '',
-		description: 'URL de la page LinkedIn',
-	},
-	{
 		displayName: 'Number of Employees',
 		name: 'no_of_employees',
 		type: 'options',
 		options: NO_OF_EMPLOYEES_OPTIONS,
 		default: '1-10',
 		description: "Tranche d'effectif",
+	},
+	{
+		displayName: 'Organization Logo',
+		name: 'organization_logo',
+		type: 'string',
+		default: '',
+		description:
+			"URL du fichier logo, telle que renvoyée par l'upload Frappe (ex. /files/logo.png).",
 	},
 	{
 		displayName: 'Organization Name',
@@ -90,13 +88,6 @@ const organizationFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description: 'Lien vers un enregistrement du doctype CRM Territory',
-	},
-	{
-		displayName: 'Twitter',
-		name: 'twitter',
-		type: 'string',
-		default: '',
-		description: 'Identifiant ou URL Twitter',
 	},
 	{
 		displayName: 'Website',

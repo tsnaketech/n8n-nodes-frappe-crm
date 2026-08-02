@@ -302,7 +302,9 @@ El nodo devuelve `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibilidad
 
-Probado con n8n 1.x y Frappe Framework v15 con Frappe CRM. El nodo solo usa los endpoints REST estándar `/api/resource`, por lo que debería funcionar con cualquier versión de Frappe CRM que conserve los nombres de doctype indicados arriba.
+Probado con n8n 1.x, **Frappe Framework 16.29.0 y Frappe CRM 1.81.0**, con la lista de campos contrastada con los metadatos en vivo de los doctypes. El desarrollo inicial se hizo sobre Frappe Framework v15.
+
+El nodo solo usa los endpoints REST estándar `/api/resource`, por lo que debería funcionar con cualquier versión de Frappe CRM que conserve los nombres de doctype indicados arriba. Una salvedad conviene conocerla: Frappe responde `200 OK` y **descarta en silencio** los campos que ya no existen en un doctype. Una actualización que elimine un campo no se manifiesta como error, sino como datos que desaparecen sin aviso. Si un campo deja de guardarse tras actualizar, comprueba que sigue existiendo con `GET /api/resource/DocType/CRM Organization`.
 
 ## Recursos
 

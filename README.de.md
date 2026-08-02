@@ -302,7 +302,9 @@ Der Node gibt `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-2026-
 
 ## Kompatibilität
 
-Getestet mit n8n 1.x und Frappe Framework v15 mit Frappe CRM. Der Node verwendet ausschließlich die Standard-REST-Endpunkte `/api/resource` und sollte daher mit jeder Frappe-CRM-Version funktionieren, die die oben genannten Doctype-Namen beibehält.
+Getestet mit n8n 1.x, **Frappe Framework 16.29.0 und Frappe CRM 1.81.0**; die Feldliste wurde gegen die Live-Metadaten der Doctypes geprüft. Die ursprüngliche Entwicklung erfolgte auf Frappe Framework v15.
+
+Der Node verwendet ausschließlich die Standard-REST-Endpunkte `/api/resource` und sollte daher mit jeder Frappe-CRM-Version funktionieren, die die oben genannten Doctype-Namen beibehält. Ein Vorbehalt ist wissenswert: Frappe antwortet mit `200 OK` und **verwirft stillschweigend** Felder, die es auf einem Doctype nicht mehr gibt. Ein Upgrade, das ein Feld entfernt, zeigt sich also nicht als Fehler, sondern als Daten, die geräuschlos verschwinden. Wird ein Feld nach einem Update nicht mehr gespeichert, prüfen Sie mit `GET /api/resource/DocType/CRM Organization`, ob es noch existiert.
 
 ## Ressourcen
 
