@@ -302,7 +302,7 @@ El nodo devuelve `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibilidad
 
-Escrito para la versión 1 de la API de nodos (`n8nNodesApiVersion: 1`), la que usan tanto n8n 1.x como 2.x para los nodos comunitarios. El paquete ha sido cargado por **n8n 2.32.7** como extensión personalizada; no está fijado a ninguna versión de n8n y declara `n8n-workflow` como peer dependency comodín.
+Para **n8n 2.x**, escrito para la versión 1 de la API de nodos (`n8nNodesApiVersion: 1`). El paquete ha sido cargado por n8n 2.32.7 como extensión personalizada; no está fijado a ninguna versión de n8n y declara `n8n-workflow` como peer dependency comodín.
 
 Las operaciones se probaron contra **Frappe Framework 16.29.0 con Frappe CRM 1.81.0**, ejecutando el nodo compilado sobre un sitio real y contrastando cada campo declarado con los metadatos en vivo de los doctypes. El desarrollo inicial se hizo sobre Frappe Framework v15.
 

@@ -302,7 +302,7 @@ Le nœud renvoie `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibilité
 
-Écrit pour la version 1 de l'API de nœuds (`n8nNodesApiVersion: 1`), celle qu'utilisent aussi bien n8n 1.x que 2.x pour les nœuds communautaires. Le package a été chargé par **n8n 2.32.7** en tant qu'extension custom ; il n'est épinglé à aucune version de n8n et déclare `n8n-workflow` en peer dependency joker.
+Pour **n8n 2.x**, écrit pour la version 1 de l'API de nœuds (`n8nNodesApiVersion: 1`). Le package a été chargé par n8n 2.32.7 en tant qu'extension custom ; il n'est épinglé à aucune version de n8n et déclare `n8n-workflow` en peer dependency joker.
 
 Les opérations, elles, ont été éprouvées contre **Frappe Framework 16.29.0 avec Frappe CRM 1.81.0**, en exécutant le nœud compilé sur un site réel et en confrontant chaque champ déclaré au méta live des doctypes. Le développement initial s'est fait sur Frappe Framework v15.
 

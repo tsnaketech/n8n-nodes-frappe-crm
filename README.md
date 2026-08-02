@@ -302,7 +302,7 @@ The node outputs `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibility
 
-Built against node API version 1 (`n8nNodesApiVersion: 1`), which both n8n 1.x and 2.x use for community nodes. The package has been loaded by **n8n 2.32.7** as a custom extension; it is not pinned to a specific n8n version and declares `n8n-workflow` as a wildcard peer dependency.
+For **n8n 2.x**, built against node API version 1 (`n8nNodesApiVersion: 1`). The package has been loaded by n8n 2.32.7 as a custom extension; it is not pinned to a specific n8n version and declares `n8n-workflow` as a wildcard peer dependency.
 
 The operations themselves were exercised against **Frappe Framework 16.29.0 with Frappe CRM 1.81.0**, by running the compiled node against a live site and checking every declared field against the live doctype metadata. Earlier development happened on Frappe Framework v15.
 
