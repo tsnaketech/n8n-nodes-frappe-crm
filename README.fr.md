@@ -302,7 +302,9 @@ Le nœud renvoie `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibilité
 
-Testé avec n8n 1.x, **Frappe Framework 16.29.0 et Frappe CRM 1.81.0**, la liste des champs ayant été confrontée au méta live des doctypes. Le développement initial s'est fait sur Frappe Framework v15.
+Écrit pour la version 1 de l'API de nœuds (`n8nNodesApiVersion: 1`), celle qu'utilisent aussi bien n8n 1.x que 2.x pour les nœuds communautaires. Le package a été chargé par **n8n 2.32.7** en tant qu'extension custom ; il n'est épinglé à aucune version de n8n et déclare `n8n-workflow` en peer dependency joker.
+
+Les opérations, elles, ont été éprouvées contre **Frappe Framework 16.29.0 avec Frappe CRM 1.81.0**, en exécutant le nœud compilé sur un site réel et en confrontant chaque champ déclaré au méta live des doctypes. Le développement initial s'est fait sur Frappe Framework v15.
 
 Le nœud n'utilise que les endpoints REST standard `/api/resource` : il devrait fonctionner avec toute version de Frappe CRM conservant les noms de doctypes listés ci-dessus. Une réserve utile à connaître : Frappe répond `200 OK` et **jette silencieusement** les champs qui n'existent plus sur un doctype. Une montée de version qui supprime un champ ne se manifeste donc pas par une erreur, mais par des données qui disparaissent sans bruit. Si un champ cesse d'être enregistré après une mise à jour, vérifiez qu'il existe encore via `GET /api/resource/DocType/CRM Organization`.
 

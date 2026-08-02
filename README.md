@@ -302,7 +302,9 @@ The node outputs `{ "success": true, "doctype": "CRM Lead", "name": "CRM-LEAD-20
 
 ## Compatibility
 
-Tested against n8n 1.x, **Frappe Framework 16.29.0 and Frappe CRM 1.81.0**, with the field list checked against the live doctype metadata. Earlier development happened on Frappe Framework v15.
+Built against node API version 1 (`n8nNodesApiVersion: 1`), which both n8n 1.x and 2.x use for community nodes. The package has been loaded by **n8n 2.32.7** as a custom extension; it is not pinned to a specific n8n version and declares `n8n-workflow` as a wildcard peer dependency.
+
+The operations themselves were exercised against **Frappe Framework 16.29.0 with Frappe CRM 1.81.0**, by running the compiled node against a live site and checking every declared field against the live doctype metadata. Earlier development happened on Frappe Framework v15.
 
 The node only uses the standard `/api/resource` REST endpoints, so it should work with any Frappe CRM version that keeps the doctype names listed above. One caveat worth knowing: Frappe answers `200 OK` and **silently drops** fields that no longer exist on a doctype, so an upgrade that removes a field shows up as data quietly going missing rather than as an error. If you upgrade Frappe CRM and a field stops being saved, check it still exists via `GET /api/resource/DocType/CRM Organization`.
 
