@@ -34,9 +34,9 @@ export class FrappeApi implements ICredentialType {
 			type: 'string',
 			default: '',
 			required: true,
-			placeholder: 'https://mon-site.frappe.cloud',
+			placeholder: 'https://my-site.frappe.cloud',
 			description:
-				"URL racine du site Frappe, sans chemin ni slash final. Le nœud y ajoute lui-même /api/resource ou /api/method.",
+				'Root URL of the Frappe site, without any path or trailing slash. The node appends /api/resource or /api/method itself.',
 		},
 		{
 			displayName: 'API Key',
@@ -45,7 +45,7 @@ export class FrappeApi implements ICredentialType {
 			default: '',
 			required: true,
 			description:
-				'Clé générée depuis le profil utilisateur Frappe : Settings > API Access > Generate Keys',
+				'Key generated from the Frappe user profile: Settings > API Access > Generate Keys',
 			typeOptions: { password: true },
 		},
 		{
@@ -55,7 +55,7 @@ export class FrappeApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: '',
 			required: true,
-			description: "Secret affiché une seule fois, au moment de la génération des clés",
+			description: 'Secret shown only once, when the keys are generated',
 		},
 	];
 
@@ -81,7 +81,7 @@ export class FrappeApi implements ICredentialType {
 					key: 'message',
 					value: 'Guest',
 					message:
-						"Connexion anonyme : le site a répondu mais n'a pas reconnu les clés. Vérifiez l'API Key et l'API Secret.",
+						'Anonymous connection: the site answered but did not recognise the keys. Check the API Key and API Secret.',
 				},
 			},
 		],

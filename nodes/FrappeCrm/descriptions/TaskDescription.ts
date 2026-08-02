@@ -9,7 +9,7 @@ const taskFields: INodeProperties[] = [
 		name: 'assigned_to',
 		type: 'string',
 		default: '',
-		description: "Email de l'utilisateur Frappe assigné à la tâche",
+		description: 'Email of the Frappe user assigned to the task',
 	},
 	{
 		displayName: 'Description',
@@ -17,14 +17,14 @@ const taskFields: INodeProperties[] = [
 		type: 'string',
 		typeOptions: { rows: 4 },
 		default: '',
-		description: 'Contenu de la tâche, au format HTML (champ Text Editor)',
+		description: 'Body of the task, as HTML (a Text Editor field)',
 	},
 	{
 		displayName: 'Due Date',
 		name: 'due_date',
 		type: 'dateTime',
 		default: '',
-		description: "Date et heure d'échéance",
+		description: 'Due date and time',
 	},
 	{
 		displayName: 'Priority',
@@ -36,7 +36,7 @@ const taskFields: INodeProperties[] = [
 			{ name: 'High', value: 'High' },
 		],
 		default: 'Low',
-		description: 'Priorité de la tâche',
+		description: 'Priority of the task',
 	},
 	{
 		displayName: 'Reference Doctype',
@@ -47,7 +47,7 @@ const taskFields: INodeProperties[] = [
 			{ name: 'CRM Deal', value: 'CRM Deal' },
 		],
 		default: 'CRM Lead',
-		description: "Type d'enregistrement auquel la tâche est rattachée",
+		description: 'Record type the task is attached to',
 	},
 	{
 		displayName: 'Reference Document Name',
@@ -55,14 +55,13 @@ const taskFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description:
-			"Identifiant de l'enregistrement rattaché, par exemple CRM-LEAD-2026-00001. À renseigner avec « Reference Doctype ».",
+			'Identifier of the attached record, for example CRM-LEAD-2026-00001. Set it together with "Reference Doctype".',
 	},
 	{
 		displayName: 'Start Date',
 		name: 'start_date',
 		type: 'dateTime',
 		default: '',
-		description: 'Date de début',
 	},
 	{
 		displayName: 'Status',
@@ -76,14 +75,14 @@ const taskFields: INodeProperties[] = [
 			{ name: 'Todo', value: 'Todo' },
 		],
 		default: 'Backlog',
-		description: 'Statut de la tâche',
+		description: 'Status of the task',
 	},
 	{
 		displayName: 'Title',
 		name: 'title',
 		type: 'string',
 		default: '',
-		description: 'Titre de la tâche',
+		description: 'Title of the task',
 	},
 ];
 
@@ -96,11 +95,11 @@ export const taskDescription: INodeProperties[] = [
 		default: '',
 		required: true,
 		displayOptions: { show: { resource: ['task'], operation: ['create'] } },
-		description: 'Titre de la tâche, seul champ obligatoire de CRM Task',
+		description: 'Title of the task, the only field CRM Task requires',
 	},
 	documentIdField(
 		'task',
-		'Champ « name » de l\'enregistrement Frappe. CRM Task utilise autoname: autoincrement — son identifiant est donc un nombre, par exemple 42.',
+		'The Frappe record "name" field. CRM Task uses autoname: autoincrement, so the identifier is a number, for example 42.',
 	),
 	{
 		displayName: 'Additional Fields',

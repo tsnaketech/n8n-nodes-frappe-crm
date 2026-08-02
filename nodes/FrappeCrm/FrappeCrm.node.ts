@@ -139,11 +139,11 @@ function parseJsonParameter(
 	} catch {
 		throw new NodeOperationError(
 			context.getNode(),
-			`Le paramètre « ${parameterName} » n'est pas du JSON valide : ${value}`,
+			`Parameter "${parameterName}" is not valid JSON: ${value}`,
 			{
 				itemIndex,
 				description:
-					'Attendu : un objet {"champ": "valeur"} ou un tableau [["champ","opérateur","valeur"]].',
+					'Expected an object {"field": "value"} or an array [["field","operator","value"]].',
 			},
 		);
 	}
@@ -179,7 +179,7 @@ export class FrappeCrm implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Lire et écrire les leads, affaires, contacts et tâches de Frappe CRM',
+		description: 'Read and write Frappe CRM leads, deals, contacts and tasks',
 		defaults: {
 			name: 'Frappe CRM',
 		},
@@ -330,7 +330,7 @@ export class FrappeCrm implements INodeType {
 				} else {
 					throw new NodeOperationError(
 						this.getNode(),
-						`L'opération « ${operation} » n'est pas supportée`,
+						`The operation "${operation}" is not supported`,
 						{ itemIndex: i },
 					);
 				}

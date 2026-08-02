@@ -28,35 +28,34 @@ const organizationFields: INodeProperties[] = [
 		name: 'address',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype Address',
+		description: 'Link to an Address doctype record',
 	},
 	{
 		displayName: 'Annual Revenue',
 		name: 'annual_revenue',
 		type: 'number',
 		default: 0,
-		description: "Chiffre d'affaires annuel",
 	},
 	{
 		displayName: 'Currency',
 		name: 'currency',
 		type: 'string',
 		default: '',
-		description: 'Code devise, lien vers le doctype Currency (ex. EUR, USD).',
+		description: 'Currency code, link to the Currency doctype (e.g. EUR, USD)',
 	},
 	{
 		displayName: 'Exchange Rate',
 		name: 'exchange_rate',
 		type: 'number',
 		default: 0,
-		description: 'Taux de change entre la devise ci-dessus et la devise du site',
+		description: 'Exchange rate between the currency above and the site currency',
 	},
 	{
 		displayName: 'Industry',
 		name: 'industry',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype CRM Industry',
+		description: 'Link to a CRM Industry doctype record',
 	},
 	{
 		displayName: 'Number of Employees',
@@ -64,7 +63,7 @@ const organizationFields: INodeProperties[] = [
 		type: 'options',
 		options: NO_OF_EMPLOYEES_OPTIONS,
 		default: '1-10',
-		description: "Tranche d'effectif",
+		description: 'Employee count bracket',
 	},
 	{
 		displayName: 'Organization Logo',
@@ -72,7 +71,7 @@ const organizationFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description:
-			"URL du fichier logo, telle que renvoyée par l'upload Frappe (ex. /files/logo.png).",
+			'URL of the logo file, as returned by the Frappe upload (e.g. /files/logo.png)',
 	},
 	{
 		displayName: 'Organization Name',
@@ -80,21 +79,21 @@ const organizationFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description:
-			"Nom de l'organisation. Il sert d'identifiant au document : le modifier renomme l'enregistrement.",
+			'Name of the organization. It doubles as the document identifier: changing it renames the record.',
 	},
 	{
 		displayName: 'Territory',
 		name: 'territory',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype CRM Territory',
+		description: 'Link to a CRM Territory doctype record',
 	},
 	{
 		displayName: 'Website',
 		name: 'website',
 		type: 'string',
 		default: '',
-		description: "Site web de l'organisation",
+		description: 'Website of the organization',
 	},
 ];
 
@@ -107,11 +106,11 @@ export const organizationDescription: INodeProperties[] = [
 		default: '',
 		required: true,
 		displayOptions: { show: { resource: ['organization'], operation: ['create'] } },
-		description: "Nom de l'organisation, qui sert aussi d'identifiant au document",
+		description: 'Name of the organization, which also acts as the document identifier',
 	},
 	documentIdField(
 		'organization',
-		"Champ « name » de l'enregistrement Frappe. Pour une organisation il s'agit de son nom, par exemple « Acme Corp ».",
+		'The Frappe record "name" field. For an organization it is its name, for example "Acme Corp".',
 	),
 	{
 		displayName: 'Additional Fields',

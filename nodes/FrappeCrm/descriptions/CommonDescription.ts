@@ -26,31 +26,31 @@ export function operationsFor(resource: string, singular: string): INodeProperti
 			{
 				name: 'Create',
 				value: 'create',
-				description: `Créer un(e) ${singular}`,
+				description: `Create a new ${singular}`,
 				action: `Create a ${singular}`,
 			},
 			{
 				name: 'Delete',
 				value: 'delete',
-				description: `Supprimer un(e) ${singular}`,
+				description: `Delete an existing ${singular}`,
 				action: `Delete a ${singular}`,
 			},
 			{
 				name: 'Get',
 				value: 'get',
-				description: `Récupérer un(e) ${singular}`,
+				description: `Retrieve a single ${singular}`,
 				action: `Get a ${singular}`,
 			},
 			{
 				name: 'Get Many',
 				value: 'getAll',
-				description: `Récupérer plusieurs ${singular}s`,
+				description: `Retrieve many ${singular}s`,
 				action: `Get many ${singular}s`,
 			},
 			{
 				name: 'Update',
 				value: 'update',
-				description: `Mettre à jour un(e) ${singular}`,
+				description: `Update an existing ${singular}`,
 				action: `Update a ${singular}`,
 			},
 		],
@@ -115,7 +115,7 @@ export function getManyFields(resource: string): INodeProperties[] {
 					default: '',
 					placeholder: 'name,lead_name,status',
 					description:
-						'Liste des champs à retourner, séparés par des virgules. Accepte aussi un tableau JSON. Par défaut Frappe ne renvoie que « name ».',
+						'Comma-separated list of fields to return. A JSON array is accepted too. Frappe only returns "name" by default.',
 				},
 				{
 					displayName: 'Filters (JSON)',
@@ -124,7 +124,7 @@ export function getManyFields(resource: string): INodeProperties[] {
 					default: '',
 					placeholder: '{"status": "Open"}',
 					description:
-						'Filtres au format Frappe : objet {"champ": "valeur"} ou tableau [["champ","opérateur","valeur"]], par exemple [["annual_revenue",">",10000]]',
+						'Filters in Frappe format: an object {"field": "value"} or an array [["field","operator","value"]], for example [["annual_revenue",">",10000]]',
 				},
 				{
 					displayName: 'Offset',
@@ -133,7 +133,7 @@ export function getManyFields(resource: string): INodeProperties[] {
 					default: 0,
 					typeOptions: { minValue: 0 },
 					description:
-						'Nombre d\'enregistrements à ignorer (limit_start). Ignoré lorsque « Return All » est actif.',
+						'Number of records to skip (limit_start). Ignored when "Return All" is on.',
 				},
 				{
 					displayName: 'Or Filters (JSON)',
@@ -141,14 +141,14 @@ export function getManyFields(resource: string): INodeProperties[] {
 					type: 'json',
 					default: '',
 					placeholder: '[["status","=","Open"],["status","=","Replied"]]',
-					description: 'Filtres combinés en OU, même format que « Filters »',
+					description: 'Filters combined with OR, same format as "Filters"',
 				},
 				{
 					displayName: 'Sort Field',
 					name: 'sortField',
 					type: 'string',
 					default: 'modified',
-					description: 'Champ utilisé pour le tri (order_by)',
+					description: 'Field to sort on (order_by)',
 				},
 				{
 					displayName: 'Sort Order',
@@ -159,7 +159,7 @@ export function getManyFields(resource: string): INodeProperties[] {
 						{ name: 'Descending', value: 'desc' },
 					],
 					default: 'desc',
-					description: 'Sens du tri',
+					description: 'Sort direction',
 				},
 			],
 		},

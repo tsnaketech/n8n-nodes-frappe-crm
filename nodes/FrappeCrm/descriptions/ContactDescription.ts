@@ -18,28 +18,28 @@ const contactFields: INodeProperties[] = [
 		name: 'address',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype Address',
+		description: 'Link to an Address doctype record',
 	},
 	{
 		displayName: 'Company Name',
 		name: 'company_name',
 		type: 'string',
 		default: '',
-		description: "Nom de l'entreprise du contact",
+		description: 'Company name of the contact',
 	},
 	{
 		displayName: 'Department',
 		name: 'department',
 		type: 'string',
 		default: '',
-		description: 'Service auquel le contact est rattaché',
+		description: 'Department the contact belongs to',
 	},
 	{
 		displayName: 'Designation',
 		name: 'designation',
 		type: 'string',
 		default: '',
-		description: 'Fonction occupée par le contact',
+		description: 'Role held by the contact',
 	},
 	{
 		displayName: 'Email',
@@ -48,35 +48,34 @@ const contactFields: INodeProperties[] = [
 		placeholder: 'nom@email.com',
 		default: '',
 		description:
-			"Adresse email principale. Écrite dans la table enfant email_ids avec is_primary, car Frappe ignore un email_id envoyé directement.",
+			'Primary email address. Written to the email_ids child table with is_primary, because Frappe ignores an email_id sent directly.',
 	},
 	{
 		displayName: 'First Name',
 		name: 'first_name',
 		type: 'string',
 		default: '',
-		description: 'Prénom du contact',
+		description: 'First name of the contact',
 	},
 	{
 		displayName: 'Gender',
 		name: 'gender',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype Gender (ex. Male, Female).',
+		description: 'Link to a Gender doctype record (e.g. Male, Female)',
 	},
 	{
 		displayName: 'Last Name',
 		name: 'last_name',
 		type: 'string',
 		default: '',
-		description: 'Nom de famille du contact',
+		description: 'Last name of the contact',
 	},
 	{
 		displayName: 'Middle Name',
 		name: 'middle_name',
 		type: 'string',
 		default: '',
-		description: 'Deuxième prénom',
 	},
 	{
 		displayName: 'Mobile Number',
@@ -84,21 +83,22 @@ const contactFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description:
-			'Numéro de mobile. Écrit dans la table enfant phone_nos avec is_primary_mobile_no.',
+			'Mobile number. Written to the phone_nos child table with is_primary_mobile_no.',
 	},
 	{
 		displayName: 'Phone',
 		name: 'phone',
 		type: 'string',
 		default: '',
-		description: 'Numéro de téléphone fixe. Écrit dans la table enfant phone_nos avec is_primary_phone.',
+		description:
+			'Landline phone number. Written to the phone_nos child table with is_primary_phone.',
 	},
 	{
 		displayName: 'Salutation',
 		name: 'salutation',
 		type: 'string',
 		default: '',
-		description: 'Lien vers un enregistrement du doctype Salutation (ex. Mr, Mrs).',
+		description: 'Link to a Salutation doctype record (e.g. Mr, Mrs)',
 	},
 	{
 		displayName: 'Status',
@@ -110,7 +110,7 @@ const contactFields: INodeProperties[] = [
 			{ name: 'Replied', value: 'Replied' },
 		],
 		default: 'Passive',
-		description: 'Statut de suivi du contact',
+		description: 'Follow-up status of the contact',
 	},
 	{
 		displayName: 'Unsubscribed',
@@ -124,7 +124,7 @@ const contactFields: INodeProperties[] = [
 		name: 'user',
 		type: 'string',
 		default: '',
-		description: "Email d'un utilisateur Frappe à associer au contact",
+		description: 'Email of a Frappe user to link to the contact',
 	},
 ];
 
@@ -137,11 +137,11 @@ export const contactDescription: INodeProperties[] = [
 		default: '',
 		required: true,
 		displayOptions: { show: { resource: ['contact'], operation: ['create'] } },
-		description: 'Prénom du contact, utilisé par Frappe pour nommer l\'enregistrement',
+		description: 'First name of the contact, used by Frappe to name the record',
 	},
 	documentIdField(
 		'contact',
-		'Champ « name » de l\'enregistrement Frappe. Pour un contact il correspond au nom complet, par exemple « Marie Dupont ».',
+		'The Frappe record "name" field. For a contact it is the full name, for example "Marie Dupont".',
 	),
 	{
 		displayName: 'Additional Fields',
