@@ -5,7 +5,7 @@ import { documentIdField, getManyFields, omitFields, operationsFor } from './Com
 /**
  * Fields of the `Contact` doctype (Frappe core), the one Frappe CRM uses.
  *
- * « Email », « Mobile Number » and « Phone » are not plain fields on the Frappe side:
+ * "Email", "Mobile Number" and "Phone" are not plain fields on the Frappe side:
  * `Contact.email_id`, `Contact.mobile_no` and `Contact.phone` are recomputed from the
  * `email_ids` and `phone_nos` child tables (see `set_primary_email()` in
  * frappe/contacts/doctype/contact/contact.py, which blanks `email_id` out when

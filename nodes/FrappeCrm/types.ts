@@ -2,7 +2,7 @@
  * Mapping from n8n resource to Frappe doctype.
  *
  * Names verified against github.com/frappe/crm, folder `crm/fcrm/doctype/`.
- * Careful: there is no « CRM Contact » doctype. The `crm_contacts` folder defines
+ * Careful: there is no "CRM Contact" doctype. The `crm_contacts` folder defines
  * `CRM Contacts`, a child table (`"istable": 1`) used in the `contacts` field of
  * `CRM Deal`. Frappe CRM relies on the core Frappe `Contact` doctype instead
  * (see `CRM Deal.contact`, a Link to `Contact`).

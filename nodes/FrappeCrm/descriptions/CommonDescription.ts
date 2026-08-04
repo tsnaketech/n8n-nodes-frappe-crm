@@ -6,7 +6,7 @@ import type { INodeProperties } from 'n8n-workflow';
  */
 
 /**
- * Removes fields from a shared list. Used to build « Additional Fields » (create) out of
+ * Removes fields from a shared list. Used to build "Additional Fields" (create) out of
  * the full list, excluding the fields already exposed at the top level because they are
  * required.
  */
@@ -74,7 +74,7 @@ export function documentIdField(resource: string, description: string): INodePro
 }
 
 /**
- * Pagination and read options for « Get Many ».
+ * Pagination and read options for "Get Many".
  *
  * `returnAll` triggers automatic pagination through `limit_start`; otherwise `limit` is
  * sent as-is in `limit_page_length`.

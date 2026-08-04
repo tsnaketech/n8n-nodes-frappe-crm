@@ -149,7 +149,7 @@ function parseJsonParameter(
 	}
 }
 
-/** Accepte « name,status » comme ["name","status"]. */
+/** Accepts "name,status" as ["name","status"]. */
 function parseFieldList(value: string): string[] {
 	const trimmed = value.trim();
 	if (trimmed.startsWith('[')) {
@@ -167,14 +167,17 @@ export class FrappeCrm implements INodeType {
 		name: 'frappeCrm',
 		// Frappe CRM logo: opaque magenta #ef0bf5 badge with the glyph knocked out in white.
 		// A single file, hence the same magenta on both themes, by choice: the badge carries
-		// its own background and holds contrast on light as well as dark. This leaves the
-		// `icon-prefer-themed-variants` warning (non-blocking, lint exits 0); the
-		// { light, dark } form requires two distinct file paths, hence a different tint on
-		// one of the themes.
+		// its own background and holds contrast on light as well as dark.
+		//
+		// `icon-prefer-themed-variants` is silenced rather than worked around: the rule only
+		// checks that `icon` is not a string literal, it never compares the two files, so the
+		// { light, dark } form with the same path twice would satisfy it without changing a
+		// single pixel on screen.
 		//
 		// Should monochrome variants ever be reintroduced: in n8n the key names the UI
 		// theme, not the ink colour. A white icon belongs under `dark`, a black one under
 		// `light` — the other way round makes them invisible.
+		// eslint-disable-next-line @n8n/community-nodes/icon-prefer-themed-variants
 		icon: 'file:../../icons/frappe-crm.svg',
 		group: ['transform'],
 		version: 1,
