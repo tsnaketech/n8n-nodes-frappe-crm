@@ -46,7 +46,7 @@
 	},
 	"devDependencies": {
 		"@n8n/node-cli": "*",
-		"release-it": "21.0.0",
+		"release-it": "21.0.1",
 		"typescript": "~5.9.3"
 	},
 	"peerDependencies": {
