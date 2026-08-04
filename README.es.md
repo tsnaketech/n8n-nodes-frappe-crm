@@ -54,14 +54,18 @@ Las peticiones se autentican con la cabecera `Authorization: token {apiKey}:{api
 
 ### Una sola credencial para todos los nodos Frappe
 
-`frappeApi` deliberadamente **no** es específica del CRM. Frappe autentica a *un usuario en un sitio*, no a una aplicación: la misma clave de API sirve para Frappe CRM, Frappe Helpdesk, Frappe HR y Frappe LMS, que viven en el mismo sitio y comparten el mismo endpoint `/api`.
+`frappeApi` deliberadamente **no** es específica del CRM. Frappe autentica a *un usuario en un sitio*, no a una aplicación: la misma clave de API sirve para Frappe CRM, Frappe Helpdesk, Frappe HR, Frappe Insights, Frappe Learning y Frappe Lending, que viven en el mismo sitio y comparten el mismo endpoint `/api`.
 
 Los paquetes complementarios incluyen exactamente la misma credencial, con el mismo nombre interno `frappeApi`:
 
-| Paquete                      | Nodo            |
-| ---------------------------- | --------------- |
-| `n8n-nodes-frappe-helpdesk`  | Frappe Helpdesk |
-| `n8n-nodes-frappe-hrms`      | Frappe HRMS     |
+| Paquete                     | Nodo                                  |
+| --------------------------- | ------------------------------------- |
+| `n8n-nodes-frappe`          | Frappe (genérico — cualquier doctype) |
+| `n8n-nodes-frappe-helpdesk` | Frappe Helpdesk                       |
+| `n8n-nodes-frappe-hrms`     | Frappe HRMS                           |
+| `n8n-nodes-frappe-insights` | Frappe Insights                       |
+| `n8n-nodes-frappe-learning` | Frappe Learning                       |
+| `n8n-nodes-frappe-lending`  | Frappe Lending                        |
 
 Instala varios y n8n sigue mostrando un **único** tipo de credencial «Frappe API»: configuras tu sitio una vez y todos los nodos Frappe pueden seleccionarla. Crea una credencial por *sitio* («Frappe – prod», «Frappe – staging»), no una por aplicación.
 

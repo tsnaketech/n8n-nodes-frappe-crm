@@ -54,14 +54,18 @@ Anfragen werden über den Header `Authorization: token {apiKey}:{apiSecret}` aut
 
 ### Ein Credential für alle Frappe-Nodes
 
-`frappeApi` ist bewusst **nicht** CRM-spezifisch. Frappe authentifiziert *einen Benutzer auf einer Site*, nicht eine Anwendung: Derselbe API-Schlüssel funktioniert für Frappe CRM, Frappe Helpdesk, Frappe HR und Frappe LMS, die auf derselben Site liegen und denselben `/api`-Endpunkt teilen.
+`frappeApi` ist bewusst **nicht** CRM-spezifisch. Frappe authentifiziert *einen Benutzer auf einer Site*, nicht eine Anwendung: Derselbe API-Schlüssel funktioniert für Frappe CRM, Frappe Helpdesk, Frappe HR, Frappe Insights, Frappe Learning und Frappe Lending, die auf derselben Site liegen und denselben `/api`-Endpunkt teilen.
 
 Die Begleitpakete liefern genau dasselbe Credential mit, unter demselben internen Namen `frappeApi`:
 
-| Paket                        | Node            |
-| ---------------------------- | --------------- |
-| `n8n-nodes-frappe-helpdesk`  | Frappe Helpdesk |
-| `n8n-nodes-frappe-hrms`      | Frappe HRMS     |
+| Paket                       | Node                                    |
+| --------------------------- | --------------------------------------- |
+| `n8n-nodes-frappe`          | Frappe (generisch — beliebiger Doctype) |
+| `n8n-nodes-frappe-helpdesk` | Frappe Helpdesk                         |
+| `n8n-nodes-frappe-hrms`     | Frappe HRMS                             |
+| `n8n-nodes-frappe-insights` | Frappe Insights                         |
+| `n8n-nodes-frappe-learning` | Frappe Learning                         |
+| `n8n-nodes-frappe-lending`  | Frappe Lending                          |
 
 Installieren Sie mehrere davon, zeigt n8n weiterhin **einen einzigen** Credential-Typ „Frappe API": Sie konfigurieren Ihre Site einmal, und jeder Frappe-Node kann sie auswählen. Legen Sie ein Credential pro *Site* an („Frappe – Prod", „Frappe – Staging"), nicht pro Anwendung.
 
