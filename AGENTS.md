@@ -8,9 +8,10 @@ Package de nœuds communautaires n8n, écrit en TypeScript, publié sous le nom
 `n8n-nodes-frappe-crm` (dépôt : github.com/tsnaketech/n8n-nodes-frappe-crm).
 
 Objectif : une **suite** de nœuds pour les applications Frappe. Ce package ne contient que
-le nœud Frappe CRM. Les nœuds Frappe Helpdesk et Frappe HRMS existent, dans des packages
-séparés (`n8n-nodes-frappe-helpdesk`, `n8n-nodes-frappe-hrms`) ; Frappe LMS reste prévu. Le
-template de départ (`ExampleNode` / `ExampleApi`) a été supprimé.
+le nœud Frappe CRM. La famille en compte sept : le nœud générique `n8n-nodes-frappe` et les
+six nœuds applicatifs `n8n-nodes-frappe-crm`, `-helpdesk`, `-hrms`, `-insights`, `-learning`
+et `-lending`, chacun dans son propre package npm. Le template de départ
+(`ExampleNode` / `ExampleApi`) a été supprimé.
 
 Le point structurant : toutes ces applications tournent sur le même site Frappe et
 partagent la même authentification. Le credential `frappeApi` est donc **unique et
@@ -103,6 +104,14 @@ La CI n'exécute que `npm ci`, `npm run lint`, `npm run build`. Il n'y a **aucun
 dans le dépôt et aucun runner de test configuré ; ne pas inventer `npm test`. Si un
 changement mérite d'être vérifié, le faire via `npm run build` puis un chargement réel
 dans n8n (voir README, section « Testing locally in n8n »).
+
+`npm run lint` sort en succès **sans warning**. Le seul qui apparaissait,
+`icon-prefer-themed-variants`, est désactivé ligne à ligne dans le nœud, avec sa
+justification en commentaire : l'icône est un fichier unique, et c'est délibéré — le badge
+Frappe CRM porte son propre fond magenta (`#ef0bf5`) et tient le contraste sur les deux
+thèmes. La règle vérifie seulement qu'`icon` n'est pas une chaîne littérale, sans jamais
+comparer les deux fichiers : la forme `{ light, dark }` pointant deux fois le même chemin la
+satisferait sans rien changer à l'écran. Ne pas réactiver la règle sans en discuter.
 
 ## Conventions de code
 

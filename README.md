@@ -63,7 +63,7 @@ The companion packages ship the very same credential type, under the same intern
 | `n8n-nodes-frappe-helpdesk`  | Frappe Helpdesk |
 | `n8n-nodes-frappe-hrms`      | Frappe HRMS     |
 
-Install several of them and n8n still shows a **single** « Frappe API » credential type — you configure your site once, and every Frappe node can select it. Create one credential per *site* (`Frappe – prod`, `Frappe – staging`), not per application.
+Install several of them and n8n still shows a **single** "Frappe API" credential type — you configure your site once, and every Frappe node can select it. Create one credential per *site* (`Frappe – prod`, `Frappe – staging`), not per application.
 
 See [docs/CREDENTIALS.md](docs/CREDENTIALS.md) for the full architecture and for how to wire a new Frappe node to this credential.
 
