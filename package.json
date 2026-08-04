@@ -1,18 +1,20 @@
 {
 	"name": "n8n-nodes-frappe-crm",
 	"version": "0.1.0",
-	"description": "Nœuds n8n pour les applications Frappe, à commencer par Frappe CRM",
+	"description": "n8n node for Frappe CRM: leads, deals, contacts, organizations, notes and tasks",
 	"license": "MIT",
 	"homepage": "https://github.com/tsnaketech/n8n-nodes-frappe-crm#readme",
 	"keywords": [
 		"n8n-community-node-package",
 		"frappe",
 		"frappe-crm",
-		"crm"
+		"crm",
+		"sales",
+		"leads"
 	],
 	"author": {
 		"name": "tsnaketech",
-		"email": "poubello@outlook.com",
+		"email": "snaketech@proton.me",
 		"url": "https://github.com/tsnaketech"
 	},
 	"repository": {
@@ -45,9 +47,11 @@
 		]
 	},
 	"devDependencies": {
-		"@n8n/node-cli": "*",
-		"release-it": "21.0.0",
-		"typescript": "~5.9.3"
+		"@n8n/node-cli": "0.42.0",
+		"eslint": "9.39.5",
+		"prettier": "3.9.6",
+		"release-it": "21.0.1",
+		"typescript": "5.9.3"
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
