@@ -16,9 +16,27 @@ const contactFields: INodeProperties[] = [
 	{
 		displayName: 'Address',
 		name: 'address',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description: 'Link to an Address doctype record',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchAddress',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'Head Office-Billing',
+			},
+		],
 	},
 	{
 		displayName: 'Company Name',
@@ -45,7 +63,7 @@ const contactFields: INodeProperties[] = [
 		displayName: 'Email',
 		name: 'email',
 		type: 'string',
-		placeholder: 'nom@email.com',
+		placeholder: 'name@example.com',
 		default: '',
 		description:
 			'Primary email address. Written to the email_ids child table with is_primary, because Frappe ignores an email_id sent directly.',
@@ -58,11 +76,13 @@ const contactFields: INodeProperties[] = [
 		description: 'First name of the contact',
 	},
 	{
-		displayName: 'Gender',
+		displayName: 'Gender Name or ID',
 		name: 'gender',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getGenders' },
 		default: '',
-		description: 'Link to a Gender doctype record (e.g. Male, Female)',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Last Name',
@@ -82,8 +102,7 @@ const contactFields: INodeProperties[] = [
 		name: 'mobile_no',
 		type: 'string',
 		default: '',
-		description:
-			'Mobile number. Written to the phone_nos child table with is_primary_mobile_no.',
+		description: 'Mobile number. Written to the phone_nos child table with is_primary_mobile_no.',
 	},
 	{
 		displayName: 'Phone',
@@ -94,11 +113,13 @@ const contactFields: INodeProperties[] = [
 			'Landline phone number. Written to the phone_nos child table with is_primary_phone.',
 	},
 	{
-		displayName: 'Salutation',
+		displayName: 'Salutation Name or ID',
 		name: 'salutation',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getSalutations' },
 		default: '',
-		description: 'Link to a Salutation doctype record (e.g. Mr, Mrs)',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Status',
@@ -122,9 +143,27 @@ const contactFields: INodeProperties[] = [
 	{
 		displayName: 'User',
 		name: 'user',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description: 'Email of a Frappe user to link to the contact',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchUser',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'agent@example.com',
+			},
+		],
 	},
 ];
 
@@ -142,6 +181,8 @@ export const contactDescription: INodeProperties[] = [
 	documentIdField(
 		'contact',
 		'The Frappe record "name" field. For a contact it is the full name, for example "Marie Dupont".',
+		undefined,
+		'Marie Dupont',
 	),
 	{
 		displayName: 'Additional Fields',

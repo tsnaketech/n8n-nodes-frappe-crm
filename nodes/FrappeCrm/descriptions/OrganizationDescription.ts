@@ -26,9 +26,27 @@ const organizationFields: INodeProperties[] = [
 	{
 		displayName: 'Address',
 		name: 'address',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description: 'Link to an Address doctype record',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchAddress',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'Head Office-Billing',
+			},
+		],
 	},
 	{
 		displayName: 'Annual Revenue',
@@ -37,11 +55,13 @@ const organizationFields: INodeProperties[] = [
 		default: 0,
 	},
 	{
-		displayName: 'Currency',
+		displayName: 'Currency Name or ID',
 		name: 'currency',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCurrencies' },
 		default: '',
-		description: 'Currency code, link to the Currency doctype (e.g. EUR, USD)',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Exchange Rate',
@@ -51,11 +71,13 @@ const organizationFields: INodeProperties[] = [
 		description: 'Exchange rate between the currency above and the site currency',
 	},
 	{
-		displayName: 'Industry',
+		displayName: 'Industry Name or ID',
 		name: 'industry',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmIndustries' },
 		default: '',
-		description: 'Link to a CRM Industry doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Number of Employees',
@@ -70,8 +92,7 @@ const organizationFields: INodeProperties[] = [
 		name: 'organization_logo',
 		type: 'string',
 		default: '',
-		description:
-			'URL of the logo file, as returned by the Frappe upload (e.g. /files/logo.png)',
+		description: 'URL of the logo file, as returned by the Frappe upload (e.g. /files/logo.png)',
 	},
 	{
 		displayName: 'Organization Name',
@@ -82,11 +103,13 @@ const organizationFields: INodeProperties[] = [
 			'Name of the organization. It doubles as the document identifier: changing it renames the record.',
 	},
 	{
-		displayName: 'Territory',
+		displayName: 'Territory Name or ID',
 		name: 'territory',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmTerritories' },
 		default: '',
-		description: 'Link to a CRM Territory doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Website',
@@ -111,6 +134,8 @@ export const organizationDescription: INodeProperties[] = [
 	documentIdField(
 		'organization',
 		'The Frappe record "name" field. For an organization it is its name, for example "Acme Corp".',
+		undefined,
+		'Acme Corp',
 	),
 	{
 		displayName: 'Additional Fields',

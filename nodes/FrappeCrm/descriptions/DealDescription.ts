@@ -30,16 +30,36 @@ const dealFields: INodeProperties[] = [
 	{
 		displayName: 'Contact',
 		name: 'contact',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description: 'Link to a Contact doctype record',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchContact',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'Marie Dupont',
+			},
+		],
 	},
 	{
-		displayName: 'Currency',
+		displayName: 'Currency Name or ID',
 		name: 'currency',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCurrencies' },
 		default: '',
-		description: 'Currency code, link to the Currency doctype (e.g. EUR, USD)',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Deal Owner',
@@ -52,7 +72,7 @@ const dealFields: INodeProperties[] = [
 		displayName: 'Email',
 		name: 'email',
 		type: 'string',
-		placeholder: 'nom@email.com',
+		placeholder: 'name@example.com',
 		default: '',
 		description: 'Email address of the primary contact',
 	},
@@ -78,11 +98,13 @@ const dealFields: INodeProperties[] = [
 		description: 'First name of the primary contact',
 	},
 	{
-		displayName: 'Industry',
+		displayName: 'Industry Name or ID',
 		name: 'industry',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmIndustries' },
 		default: '',
-		description: 'Link to a CRM Industry doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Job Title',
@@ -101,16 +123,36 @@ const dealFields: INodeProperties[] = [
 	{
 		displayName: 'Lead',
 		name: 'lead',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description: 'Link to the originating CRM Lead, when the deal comes from a conversion',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchCrmLead',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'CRM-LEAD-2026-00001',
+			},
+		],
 	},
 	{
-		displayName: 'Lost Reason',
+		displayName: 'Lost Reason Name or ID',
 		name: 'lost_reason',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmLostReasons' },
 		default: '',
-		description: 'Link to a CRM Lost Reason doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Mobile Number',
@@ -137,10 +179,28 @@ const dealFields: INodeProperties[] = [
 	{
 		displayName: 'Organization',
 		name: 'organization',
-		type: 'string',
-		default: '',
+		type: 'resourceLocator',
+		default: { mode: 'list', value: '' },
 		description:
 			'Link to a CRM Organization doctype record. This is the organization name, which doubles as its identifier.',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchCrmOrganization',
+					searchable: true,
+					searchFilterRequired: false,
+				},
+			},
+			{
+				displayName: 'By Name',
+				name: 'name',
+				type: 'string',
+				placeholder: 'Acme Corp',
+			},
+		],
 	},
 	{
 		displayName: 'Phone',
@@ -158,26 +218,31 @@ const dealFields: INodeProperties[] = [
 		description: 'Probability of closing, as a percentage',
 	},
 	{
-		displayName: 'Source',
+		displayName: 'Source Name or ID',
 		name: 'source',
-		type: 'string',
-		default: '',
-		description: 'Link to a CRM Lead Source doctype record',
-	},
-	{
-		displayName: 'Status',
-		name: 'status',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmLeadSources' },
 		default: '',
 		description:
-			'Link to a CRM Deal Status doctype record (e.g. Qualification, Demo/Making, Negotiation, Won, Lost). Frappe applies the default status when left empty.',
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Territory',
-		name: 'territory',
-		type: 'string',
+		displayName: 'Status Name or ID',
+		name: 'status',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmDealStatuses' },
 		default: '',
-		description: 'Link to a CRM Territory doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Territory Name or ID',
+		name: 'territory',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmTerritories' },
+		default: '',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Website',
@@ -193,6 +258,8 @@ export const dealDescription: INodeProperties[] = [
 	documentIdField(
 		'deal',
 		'The Frappe record "name" field. For a deal it looks like CRM-DEAL-2026-00001.',
+		undefined,
+		'CRM-DEAL-2026-00001',
 	),
 	{
 		displayName: 'Additional Fields',

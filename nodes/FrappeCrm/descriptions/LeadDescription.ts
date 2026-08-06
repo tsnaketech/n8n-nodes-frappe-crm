@@ -23,7 +23,7 @@ const leadFields: INodeProperties[] = [
 		displayName: 'Email',
 		name: 'email',
 		type: 'string',
-		placeholder: 'nom@email.com',
+		placeholder: 'name@example.com',
 		default: '',
 		description: 'Email address of the lead',
 	},
@@ -35,18 +35,22 @@ const leadFields: INodeProperties[] = [
 		description: 'First name of the lead',
 	},
 	{
-		displayName: 'Gender',
+		displayName: 'Gender Name or ID',
 		name: 'gender',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getGenders' },
 		default: '',
-		description: 'Link to a Gender doctype record (e.g. Male, Female)',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Industry',
+		displayName: 'Industry Name or ID',
 		name: 'industry',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmIndustries' },
 		default: '',
-		description: 'Link to a CRM Industry doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Job Title',
@@ -102,33 +106,40 @@ const leadFields: INodeProperties[] = [
 		description: 'Landline phone number',
 	},
 	{
-		displayName: 'Salutation',
+		displayName: 'Salutation Name or ID',
 		name: 'salutation',
-		type: 'string',
-		default: '',
-		description: 'Link to a Salutation doctype record (e.g. Mr, Mrs)',
-	},
-	{
-		displayName: 'Source',
-		name: 'source',
-		type: 'string',
-		default: '',
-		description: 'Link to a CRM Lead Source doctype record',
-	},
-	{
-		displayName: 'Status',
-		name: 'status',
-		type: 'string',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getSalutations' },
 		default: '',
 		description:
-			'Link to a CRM Lead Status doctype record (e.g. New, Contacted, Qualified). Frappe applies the default status when left empty.',
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Territory',
-		name: 'territory',
-		type: 'string',
+		displayName: 'Source Name or ID',
+		name: 'source',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmLeadSources' },
 		default: '',
-		description: 'Link to a CRM Territory doctype record',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Status Name or ID',
+		name: 'status',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmLeadStatuses' },
+		default: '',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Territory Name or ID',
+		name: 'territory',
+		type: 'options',
+		typeOptions: { loadOptionsMethod: 'getCrmTerritories' },
+		default: '',
+		description:
+			'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Website',
@@ -153,6 +164,8 @@ export const leadDescription: INodeProperties[] = [
 	documentIdField(
 		'lead',
 		'The Frappe record "name" field. For a lead it looks like CRM-LEAD-2026-00001.',
+		undefined,
+		'CRM-LEAD-2026-00001',
 	),
 	{
 		displayName: 'Additional Fields',

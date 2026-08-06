@@ -100,6 +100,8 @@ export const taskDescription: INodeProperties[] = [
 	documentIdField(
 		'task',
 		'The Frappe record "name" field. CRM Task uses autoname: autoincrement, so the identifier is a number, for example 42.',
+		undefined,
+		'42',
 	),
 	{
 		displayName: 'Additional Fields',
