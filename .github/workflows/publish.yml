@@ -62,6 +62,12 @@ on:
       # Matches 0.1.0, 1.2.3, 2.0.0-rc.1, etc.
       # See "TAG CONVENTION" above if you prefer tags with a "v" prefix.
       - '*.*.*'
+  # Manual fallback: GitHub occasionally drops the push event when a tag is deleted and
+  # recreated with the same name in quick succession. `npm run release` in CI publishes
+  # whatever version is in package.json regardless of which ref triggered the run, and
+  # provenance attests the repository and commit — not the tag — so this is safe to use
+  # from the Actions tab if a tag push silently fails to fire the workflow above.
+  workflow_dispatch:
 
 jobs:
   publish:
