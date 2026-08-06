@@ -24,6 +24,9 @@
 	"bugs": {
 		"url": "https://github.com/tsnaketech/n8n-nodes-frappe-crm/issues"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
@@ -57,6 +60,6 @@
 		"typescript": "5.9.3"
 	},
 	"peerDependencies": {
-		"n8n-workflow": "*"
+		"n8n-workflow": ">=2"
 	}
 }
