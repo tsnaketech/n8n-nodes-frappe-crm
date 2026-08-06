@@ -21,7 +21,7 @@ export type FrappeCrmResource = keyof typeof DOCTYPE_BY_RESOURCE;
 export function getDoctype(resource: string): string {
 	const doctype = DOCTYPE_BY_RESOURCE[resource as FrappeCrmResource];
 	if (doctype === undefined) {
-		throw new Error(`Resource inconnue : ${resource}`);
+		throw new Error(`Unknown resource: ${resource}`);
 	}
 	return doctype;
 }
