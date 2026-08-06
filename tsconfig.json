@@ -16,6 +16,9 @@
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 		"incremental": true,
+		// Keeps the incremental-build cache out of dist/, and therefore out of the published
+		// tarball: it was 204 kB of the 394 kB unpacked, and means nothing to a consumer.
+		"tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
 		"declaration": true,
 		"sourceMap": true,
 		"skipLibCheck": true,
