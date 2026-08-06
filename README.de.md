@@ -1,6 +1,6 @@
 # n8n-nodes-frappe-crm
 
-n8n Community-Node-Paket für [Frappe](https://frappe.io/)-Anwendungen, beginnend mit **Frappe CRM**. Es ermöglicht das Lesen und Schreiben von Leads, Deals, Kontakten, Organisationen, Aufgaben und Notizen aus n8n-Workflows heraus.
+n8n Community-Node-Paket für **Frappe CRM**, eine der [Frappe](https://frappe.io/)-Anwendungen. Es ermöglicht das Lesen und Schreiben von Leads, Deals, Kontakten, Organisationen, Aufgaben und Notizen aus n8n-Workflows heraus. Die übrigen Frappe-Anwendungen haben [eigene Pakete](#ein-credential-für-alle-frappe-nodes).
 
 [n8n](https://n8n.io/) ist eine Workflow-Automatisierungsplattform unter [Fair-Code-Lizenz](https://docs.n8n.io/reference/license/).
 
@@ -62,7 +62,7 @@ Die Begleitpakete liefern genau dasselbe Credential mit, unter demselben interne
 | --------------------------- | --------------------------------------- |
 | `n8n-nodes-frappe`          | Frappe (generisch — beliebiger Doctype) |
 | `n8n-nodes-frappe-helpdesk` | Frappe Helpdesk                         |
-| `n8n-nodes-frappe-hrms`     | Frappe HRMS                             |
+| `n8n-nodes-frappe-hrms`     | Frappe HR                               |
 | `n8n-nodes-frappe-insights` | Frappe Insights                         |
 | `n8n-nodes-frappe-learning` | Frappe Learning                         |
 | `n8n-nodes-frappe-lending`  | Frappe Lending                          |
@@ -123,6 +123,23 @@ Frappe meldet Fehler in einem Feld `_server_messages`, das JSON *innerhalb* von 
 
 Jedes Beispiel unten ist ein Node, den Sie in einen n8n-Workflow einfügen können. Ersetzen Sie den `credentials`-Block durch Ihren eigenen.
 
+### Link-Felder
+
+Felder, die auf einen anderen Frappe-Datensatz zeigen, sind Auswahlfelder statt Freitext. Zwei
+Formen, je nachdem was das Ziel-Doctype enthält:
+
+- **Eine durchsuchbare Liste** für alles, was im Tagesgeschäft wächst — Leads, Kontakte,
+  Organisationen. Gefiltert wird auf Frappe-Seite, 50 Zeilen pro Seite, und die Liste zeigt eine
+  lesbare Bezeichnung neben der Kennung: `CRM-LEAD-2026-00001 — David Lee`. Jedes behält einen Tab
+  **By Name** für einen wörtlichen Wert oder einen Ausdruck.
+- **Eine Auswahlliste** für die Konfigurations-Doctypes, die eine Administration pflegt — Branchen,
+  Gebiete, Lead-Quellen. n8n beschriftet sie mit `… Name or ID`.
+
+Ein Auswahlfeld blockiert nie: Lässt sich die Liste nicht lesen, nimmt der manuelle Modus weiterhin
+die Kennung an. Ein durchsuchbares Feld wird als `{ "__rl": true, "mode": …, "value": … }`
+gespeichert — daher die ausgeschriebene Form in den Beispielen.
+
+
 ### Lead — anlegen
 
 ```json
@@ -134,7 +151,11 @@ Jedes Beispiel unten ist ein Node, den Sie in einen n8n-Workflow einfügen könn
 		"additionalFields": {
 			"last_name": "Dupont",
 			"email": "marie.dupont@acme.io",
-			"organization": "Acme Corp",
+			"organization": {
+				"__rl": true,
+				"mode": "name",
+				"value": "Acme Corp"
+			},
 			"status": "New",
 			"source": "Website",
 			"no_of_employees": "51-200"
@@ -210,7 +231,11 @@ Die Dokument-ID einer Organisation ist ihr Name:
 	"parameters": {
 		"resource": "organization",
 		"operation": "update",
-		"documentId": "Acme Corp",
+		"documentId": {
+			"__rl": true,
+			"mode": "name",
+			"value": "Acme Corp"
+		},
 		"updateFields": {
 			"website": "https://acme.io",
 			"industry": "Technology",
@@ -292,7 +317,11 @@ Für jede Resource, anhand ihrer Dokument-ID:
 	"parameters": {
 		"resource": "lead",
 		"operation": "delete",
-		"documentId": "CRM-LEAD-2026-00001"
+		"documentId": {
+			"__rl": true,
+			"mode": "name",
+			"value": "CRM-LEAD-2026-00001"
+		}
 	},
 	"type": "n8n-nodes-frappe-crm.frappeCrm",
 	"typeVersion": 1,

@@ -1,6 +1,6 @@
 # n8n-nodes-frappe-crm
 
-Package de nœuds communautaires n8n pour les applications [Frappe](https://frappe.io/), à commencer par **Frappe CRM**. Il permet de lire et d'écrire leads, affaires, contacts, organisations, tâches et notes depuis vos workflows n8n.
+Package de nœuds communautaires n8n pour **Frappe CRM**, l'une des applications [Frappe](https://frappe.io/). Il permet de lire et d'écrire leads, affaires, contacts, organisations, tâches et notes depuis vos workflows n8n. Les autres applications Frappe ont [leurs propres packages](#un-seul-credential-pour-tous-les-nœuds-frappe).
 
 [n8n](https://n8n.io/) est une plateforme d'automatisation de workflows sous [licence fair-code](https://docs.n8n.io/reference/license/).
 
@@ -62,7 +62,7 @@ Les packages compagnons embarquent exactement le même credential, sous le même
 | --------------------------- | ------------------------------------------- |
 | `n8n-nodes-frappe`          | Frappe (générique — n'importe quel doctype) |
 | `n8n-nodes-frappe-helpdesk` | Frappe Helpdesk                             |
-| `n8n-nodes-frappe-hrms`     | Frappe HRMS                                 |
+| `n8n-nodes-frappe-hrms`     | Frappe HR                                   |
 | `n8n-nodes-frappe-insights` | Frappe Insights                             |
 | `n8n-nodes-frappe-learning` | Frappe Learning                             |
 | `n8n-nodes-frappe-lending`  | Frappe Lending                              |
@@ -123,6 +123,23 @@ Frappe rapporte ses erreurs dans un champ `_server_messages` qui contient du JSO
 
 Chaque exemple ci-dessous est un nœud à coller dans un workflow n8n. Remplacez le bloc `credentials` par le vôtre.
 
+### Champs Link
+
+Les champs qui pointent vers un autre enregistrement Frappe sont des sélecteurs, plus du texte
+libre. Deux formes, choisies selon ce que contient le doctype visé :
+
+- **Une liste cherchable** pour tout ce que l'activité alimente — prospects, contacts,
+  organisations. Le filtrage se fait côté Frappe, par pages de 50, et la liste affiche un libellé
+  lisible à côté de l'identifiant : `CRM-LEAD-2026-00001 — David Lee`. Chacun garde un onglet **By
+  Name** pour une valeur littérale ou une expression.
+- **Une liste déroulante** pour les doctypes de configuration qu'un administrateur maintient —
+  secteurs, territoires, sources de prospect. n8n les libelle `… Name or ID`.
+
+Un sélecteur ne bloque jamais : si la liste ne peut pas être lue, le mode manuel accepte toujours
+l'identifiant. À noter, un champ cherchable est stocké sous la forme
+`{ "__rl": true, "mode": …, "value": … }`, d'où son écriture complète dans les exemples.
+
+
 ### Lead — création
 
 ```json
@@ -134,7 +151,11 @@ Chaque exemple ci-dessous est un nœud à coller dans un workflow n8n. Remplacez
 		"additionalFields": {
 			"last_name": "Dupont",
 			"email": "marie.dupont@acme.io",
-			"organization": "Acme Corp",
+			"organization": {
+				"__rl": true,
+				"mode": "name",
+				"value": "Acme Corp"
+			},
 			"status": "New",
 			"source": "Website",
 			"no_of_employees": "51-200"
@@ -210,7 +231,11 @@ L'identifiant d'une organisation est son nom :
 	"parameters": {
 		"resource": "organization",
 		"operation": "update",
-		"documentId": "Acme Corp",
+		"documentId": {
+			"__rl": true,
+			"mode": "name",
+			"value": "Acme Corp"
+		},
 		"updateFields": {
 			"website": "https://acme.io",
 			"industry": "Technology",
@@ -292,7 +317,11 @@ Pour n'importe quelle resource, à partir de son identifiant de document :
 	"parameters": {
 		"resource": "lead",
 		"operation": "delete",
-		"documentId": "CRM-LEAD-2026-00001"
+		"documentId": {
+			"__rl": true,
+			"mode": "name",
+			"value": "CRM-LEAD-2026-00001"
+		}
 	},
 	"type": "n8n-nodes-frappe-crm.frappeCrm",
 	"typeVersion": 1,
