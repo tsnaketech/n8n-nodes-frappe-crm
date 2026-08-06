@@ -22,8 +22,9 @@ point.
 **Chaque package embarque sa copie de `credentials/FrappeApi.credentials.ts`** — n8n charge
 les credentials par package npm. Les copies exposent le même `name = 'frappeApi'` et les
 mêmes champs, ce qui n'en fait qu'un seul type côté utilisateur. Toute modification de ce
-fichier, ou de `GenericFunctions.ts`, doit être répercutée à l'identique dans les packages
-Helpdesk et HRMS, sinon deux définitions divergentes se disputent le même nom interne.
+fichier, ou de `GenericFunctions.ts`, doit être répercutée à l'identique dans les **six autres
+packages** (`n8n-nodes-frappe`, `-helpdesk`, `-hrms`, `-insights`, `-learning`, `-lending`),
+sinon deux définitions divergentes se disputent le même nom interne.
 
 ## Structure
 
@@ -40,10 +41,10 @@ docs/CREDENTIALS.md                     Architecture du credential partagé
 .github/workflows/publish.yml           Publication npm avec provenance sur tag *.*.*
 ```
 
-`GenericFunctions.ts` est volontairement dépourvu de logique CRM : les packages Helpdesk et
-HRMS en embarquent la même copie, à laquelle ils n'ajoutent que des helpers `/api/method/`.
-Toute logique propre à un doctype va dans `FrappeCrm.node.ts`. Si un deuxième nœud arrive
-dans ce package, déplacer ce fichier vers `nodes/shared/`.
+`GenericFunctions.ts` est volontairement dépourvu de logique CRM : les six autres packages de
+la famille en embarquent la même copie, à laquelle ils n'ajoutent que des helpers
+`/api/method/`. Toute logique propre à un doctype va dans `FrappeCrm.node.ts`. Si un deuxième
+nœud arrive dans ce package, déplacer ce fichier vers `nodes/shared/`.
 
 ## Doctypes Frappe CRM
 
@@ -116,10 +117,9 @@ satisferait sans rien changer à l'écran. Ne pas réactiver la règle sans en d
 ## Conventions de code
 
 - Prettier (`.prettierrc.js`) : **tabulations**, largeur 100, guillemets simples, points-virgules,
-  virgules finales partout, fins de ligne LF. Attention : les fichiers `.ts` existants sont
-  indentés en espaces (2), en désaccord avec cette config. Suivre l'indentation du fichier
-  qu'on modifie plutôt que de reformater en masse ; un reformatage global doit être une
-  tâche à part, explicitement demandée.
+  virgules finales partout, fins de ligne LF. Les sources sont désormais alignées sur cette
+  config ; elles ont longtemps été indentées en espaces (2), écart depuis résorbé. Ne pas
+  réintroduire d'espaces.
 - ESLint : config `@n8n/node-cli/eslint`, non personnalisée. Elle impose les règles n8n sur
   le nommage des paramètres, `displayName`, l'ordre des options, etc. — ces erreurs de lint
   sont des vraies contraintes de la plateforme, ne pas les désactiver avec un commentaire
@@ -157,6 +157,68 @@ construites en template literal** : il a déjà remplacé une description
 passage (le build ne le voit pas, seul `noUnusedLocals` a signalé le paramètre devenu
 inutilisé). Après un `lint:fix`, relire le diff des fichiers `descriptions/` plutôt que de
 le supposer sûr. Les `description` doivent rester des chaînes littérales.
+
+## Sélecteurs (champs Link)
+
+Aucun champ pointant vers un autre enregistrement Frappe n'est en texte libre. Cinq blocs
+portent ce mécanisme dans `FrappeCrm.node.ts` :
+
+| Bloc | Rôle |
+| --- | --- |
+| `searchIn` | recherche paginée dans un doctype, filtrage côté Frappe |
+| `searchDocuments` | le champ **Document** ; résout le doctype depuis le paramètre `resource` |
+| `linkSearch(doctype, titleField?)` | fabrique une recherche pour un champ Link |
+| `linkOptions(doctype, { filters?, labelField? })` | fabrique une liste déroulante |
+| `unwrapResourceLocators` | déballe les locators d'une collection avant l'envoi |
+
+**Ces blocs sont identiques au caractère près dans les six packages applicatifs**, au même
+titre que le transport (règle n°0) : une correction ici se reporte partout.
+
+### À ne pas casser
+
+- **`documentId` est un `resourceLocator`.** Le lire sans `{ extractValue: true }` renvoie
+  `{ __rl, mode, value }` et Frappe reçoit `[object Object]` dans l'URL. Même chose pour tout
+  champ Link exposé au premier niveau.
+- **Les locators d'une collection ne sont pas déballés par n8n.**
+  `getNodeParameter('additionalFields', i)` rend les objets bruts : passer par
+  `unwrapResourceLocators` avant de construire le corps. n8n ne déballe que si l'on adresse le
+  paramètre par son chemin exact, ce qui imposerait un appel par champ.
+- **Une méthode `listSearch` ignore quel champ l'a appelée.** D'où une méthode liée par doctype
+  cible, produite par la fabrique — et non une méthode générique.
+
+### Choisir entre recherche et liste déroulante
+
+Le critère est la **nature** du doctype, pas son nombre de lignes actuel : `Address` ou
+`Project` peuvent être vides sur un site de test et sans limite en production.
+
+- **Recherche** pour ce que l'activité alimente : personnes, documents transactionnels, et les
+  listes ISO volumineuses (`Country`, 250 lignes).
+- **Liste déroulante** pour ce qu'un administrateur maintient. `Currency` y entre grâce au
+  filtre `enabled = 1`, qui ramène ~150 lignes à une poignée.
+
+### Champ titre : se lire, jamais se deviner
+
+Lire **`title_field` et `autoname`** dans `/api/resource/DocType/<nom>` avant de renseigner
+`TITLE_FIELD_BY_RESOURCE` ou l'argument `titleField`. Quand l'`autoname` est `field:x` ou
+`format:{####} {title}`, le `name` porte déjà le libellé et en ajouter un le répète
+(« 0002 Introduction — Introduction »).
+
+Les deux fabriques retombent sur `name` seul si Frappe refuse le champ, donc **une erreur ici
+ne casse rien et ne se voit pas** : elle se contrôle sur des données réelles, pas au jugé.
+
+### Détecter un champ Link
+
+Se fier à ce que le doctype **déclare**, pas au libellé des descriptions du nœud. Un comptage
+fondé sur la mention « Link to » avait manqué 16 champs sur le seul package HRMS. Penser aussi
+aux **Custom Fields** : ils n'apparaissent pas dans `DocType.fields` et se lisent séparément
+via le doctype `Custom Field`.
+
+### Contrainte ESLint sur les listes dynamiques
+
+Un champ `type: 'options'` alimenté par `loadOptionsMethod` impose un `displayName` suffixé
+« Name or ID » et une `description` strictement égale au texte « Choose from the list, or
+specify an ID using an expression ». Aucune précision métier ne peut y rester : sa place est
+dans le README.
 
 ## Documentation
 
