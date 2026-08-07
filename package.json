@@ -36,8 +36,8 @@
 		"format:check": "prettier nodes credentials package.json gulpfile.js --check",
 		"lint": "eslint nodes credentials package.json --ignore-pattern '**/*.test.ts'",
 		"lint:fix": "eslint nodes credentials package.json --ignore-pattern '**/*.test.ts' --fix",
-		"test": "vitest run",
-		"test:watch": "vitest",
+		"test": "vitest run --exclude 'dist/**'",
+		"test:watch": "vitest --exclude 'dist/**'",
 		"ci": "npm run format:check && npm run lint && npm run test",
 		"prepack": "npm run rebuild"
 	},
